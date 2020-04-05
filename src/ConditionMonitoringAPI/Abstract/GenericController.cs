@@ -12,7 +12,7 @@ using FluentValidation.Results;
 
 namespace ConditionMonitoringAPI.Abstract
 {
-    public abstract class GenericController<TEntity, TId, TValidator> : ReadOnlyController<TEntity, TId> 
+    public abstract class GenericController<TEntity, TId, TValidator> : ReadOnlyController<TEntity, TId>
         where TEntity : class, IHaveId<TId> 
         where TValidator : AbstractValidator<TEntity>
     {

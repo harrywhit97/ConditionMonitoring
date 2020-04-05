@@ -1,8 +1,8 @@
 ﻿namespace Domain.Interfaces
 {
-    public interface ISensor<TId> : IHaveId<TId>
+    public interface ISensor : IHaveId<long>
     {
-        public TId Id { get; set; }
+        public long Id { get; set; }
         public string Name { get; set; }
     }
 }
