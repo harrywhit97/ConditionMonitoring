@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Domain.Interfaces
+﻿namespace Domain.Interfaces
 {
-    class ISensor
+    public interface ISensor<TId> : IHaveId<TId>
     {
+        public TId Id { get; set; }
+        public string Name { get; set; }
     }
 }

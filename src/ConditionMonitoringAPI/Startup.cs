@@ -1,5 +1,7 @@
 using System.Linq;
+using ConditionMonitoringAPI.Services;
 using ConditionMonitoringAPI.Validators;
+using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
@@ -28,13 +30,15 @@ namespace ConditionMonitoringAPI
 
             var connectionString = Configuration.GetConnectionString("Database");
 
-            services.AddDbContext<ConditionMonitoringContext>(options =>
+            services.AddDbContext<ConditionMonitoringDbContext>(options =>
                 options.UseSqlServer(connectionString));
             services.AddOData();
 
             services.AddMvc().AddControllersAsServices();
 
             services.AddScoped<LightSensorReadingValidator>();
+
+            services.AddTransient<IDateTime, DateTimeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

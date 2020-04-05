@@ -1,5 +1,6 @@
 ﻿using Domain.Models;
 using FluentValidation;
+using System;
 
 namespace ConditionMonitoringAPI.Validators
 {
@@ -9,6 +10,9 @@ namespace ConditionMonitoringAPI.Validators
         {
             RuleFor(x => x.RawReading)
                 .GreaterThanOrEqualTo(0);
+
+            RuleFor(x => x.ReadingTime)
+                .GreaterThan(DateTimeOffset.MinValue);
         }
     }
 }

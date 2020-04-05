@@ -7,7 +7,7 @@ namespace Domain.Models
     {
         public long Id { get; set; }
         public int RawReading { get; set; }
-        public int Brightness { get; set; }
         public DateTimeOffset ReadingTime { get; set; }
+        public int Brightness { get; set; }        
     }
 }

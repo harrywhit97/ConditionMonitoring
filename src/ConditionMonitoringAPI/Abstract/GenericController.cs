@@ -32,8 +32,6 @@ namespace ConditionMonitoringAPI.Abstract
                 return BadRequest(e.Message);
             }
 
-           // entity = SetCreatedAndUpdatedTimes(entity, DateTimeOffset.Now);
-
             Repository.Add(entity);
             Context.SaveChanges();
             return Created(entity);
@@ -58,8 +56,6 @@ namespace ConditionMonitoringAPI.Abstract
             if (entity is null)
                 return NotFound();
 
-            //entity.DateUpdated = DateTimeOffset.Now;
-
             entityDelta.Patch(entity);
 
             try
@@ -82,7 +78,6 @@ namespace ConditionMonitoringAPI.Abstract
             try
             {
                 update = Sanitize(update);
-               // update.DateUpdated = DateTimeOffset.Now;
             }
             catch (Exception e)
             {
@@ -140,12 +135,5 @@ namespace ConditionMonitoringAPI.Abstract
             }
             return entity;
         }
-
-        //public TEntity SetCreatedAndUpdatedTimes(TEntity entity, DateTimeOffset now)
-        //{
-        //    entity.DateCreated = now;
-        //    entity.DateUpdated = now;
-        //    return entity;
-        //}
     }
 }
