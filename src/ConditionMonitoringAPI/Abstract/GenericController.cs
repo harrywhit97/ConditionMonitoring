@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using FluentValidation;
 using Microsoft.AspNet.OData;
-using System.Text.RegularExpressions;
 using System;
 using System.Text;
 using Domain.Interfaces;
+using System.Threading.Tasks;
+using ConditionMonitoringAPI.Utils;
+using FluentValidation.Results;
 
 namespace ConditionMonitoringAPI.Abstract
 {
@@ -21,11 +23,12 @@ namespace ConditionMonitoringAPI.Abstract
             Validator = validator;
         }
 
-        public virtual IActionResult Post([FromBody] TEntity entity)
+        public virtual async Task<IActionResult> Post([FromBody] TEntity entity)
         {
             try
             {
-                entity = Sanitize(entity);
+                entity = SanatizeData.SanitizeStrings(entity);
+                ValidateEntity(entity);
             }
             catch (Exception e)
             {
@@ -33,7 +36,7 @@ namespace ConditionMonitoringAPI.Abstract
             }
 
             Repository.Add(entity);
-            Context.SaveChanges();
+            await Context.SaveChangesAsync();
             return Created(entity);
         }
 
@@ -49,7 +52,7 @@ namespace ConditionMonitoringAPI.Abstract
             return Ok();
         }
 
-        public IActionResult Patch([FromODataUri] TId key, [FromBody] Delta<TEntity> entityDelta)
+        public async Task<IActionResult> Patch([FromODataUri] TId key, [FromBody] Delta<TEntity> entityDelta)
         {
             var entity = Repository.Find(key);
 
@@ -60,7 +63,7 @@ namespace ConditionMonitoringAPI.Abstract
 
             try
             {
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -73,11 +76,12 @@ namespace ConditionMonitoringAPI.Abstract
             return Updated(entity);
         }
 
-        public IActionResult Put([FromODataUri]TId key, [FromBody] TEntity update)
+        public async Task<IActionResult> Put([FromODataUri]TId key, [FromBody] TEntity update)
         {
             try
             {
-                update = Sanitize(update);
+                update = SanatizeData.SanitizeStrings(update);
+                ValidateEntity(update);
             }
             catch (Exception e)
             {
@@ -90,7 +94,7 @@ namespace ConditionMonitoringAPI.Abstract
             Context.Entry(update).State = EntityState.Modified;
             try
             {
-                Context.SaveChanges();
+                await Context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -103,37 +107,20 @@ namespace ConditionMonitoringAPI.Abstract
         }
 
         bool EntityExists(TId key) => Repository.Any(x => x.Id.Equals(key));
-
-        TEntity Sanitize(TEntity entity)
-        {
-            _ = entity ?? throw new ArgumentNullException();
-
-            var t = entity.GetType();
-            var properties = t.GetProperties();
-
-            for (int i = 0; i < properties.Length; i++)
-            {
-                var p = t.GetProperty(properties[i].Name);
-
-                if (p.PropertyType == typeof(string))
-                {
-                    var value = p.GetValue(entity).ToString().Trim();
-                    if (Regex.IsMatch(value, @"^[a-zA-Z0-9]+$"))
-                        p.SetValue(entity, value);
-                    else
-                        throw new Exception($"Property '{p.Name}' can must only contain letters and numbers. '{value}' is not a valid value.");
-                }
-            }
-
+        
+        void ValidateEntity(TEntity entity) 
+        { 
             var result = Validator.Validate(entity);
 
             if (!result.IsValid)
-            {
-                var errors = new StringBuilder();
-                result.Errors.Select(x => errors.Append($"{x.ErrorMessage};"));
-                throw new ArgumentException(errors.ToString());
-            }
-            return entity;
+                throw new ArgumentException(GetValidationErrorString(result));
+        }
+
+        string GetValidationErrorString(ValidationResult result)
+        {
+            var errors = new StringBuilder();
+            result.Errors.Select(x => errors.Append($"{x.ErrorMessage};"));
+            return errors.ToString();
         }
     }
 }

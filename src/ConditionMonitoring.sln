@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29905.134
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConditionMonitoringAPI", "ConditionMonitoringAPI\ConditionMonitoringAPI.csproj", "{3120B783-159F-4554-B2C2-4EA73496E797}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConditionMonitoringAPI", "ConditionMonitoringAPI\ConditionMonitoringAPI.csproj", "{3120B783-159F-4554-B2C2-4EA73496E797}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{F64A8E4C-4191-49E3-BEFC-677CA84564DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{F64A8E4C-4191-49E3-BEFC-677CA84564DB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConditionMonitoringAPI.Tests", "ConditionMonitoringAPI.Tests\ConditionMonitoringAPI.Tests.csproj", "{FB3FAD47-0C6A-44EB-A4BF-6D32ECCEF9E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{F64A8E4C-4191-49E3-BEFC-677CA84564DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F64A8E4C-4191-49E3-BEFC-677CA84564DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F64A8E4C-4191-49E3-BEFC-677CA84564DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB3FAD47-0C6A-44EB-A4BF-6D32ECCEF9E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB3FAD47-0C6A-44EB-A4BF-6D32ECCEF9E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB3FAD47-0C6A-44EB-A4BF-6D32ECCEF9E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB3FAD47-0C6A-44EB-A4BF-6D32ECCEF9E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
