@@ -1,7 +1,4 @@
 ﻿using Domain.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Domain.Models
 {
@@ -9,5 +6,9 @@ namespace Domain.Models
     {
         public long Id { get; set; }
         public string Name { get; set; }
+        public long Address { get; set; }
+        public virtual Board Board { get; set; }
+        public long Pin { get; set; }
+        public long CommsType { get; set; }
     }
 }
