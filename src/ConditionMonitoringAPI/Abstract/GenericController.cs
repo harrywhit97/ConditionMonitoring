@@ -1,5 +1,4 @@
-﻿using Domain.Abstract;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using FluentValidation;
@@ -7,11 +6,12 @@ using Microsoft.AspNet.OData;
 using System.Text.RegularExpressions;
 using System;
 using System.Text;
+using Domain.Interfaces;
 
 namespace ConditionMonitoringAPI.Abstract
 {
     public abstract class GenericController<TEntity, TId, TValidator> : ReadOnlyController<TEntity, TId> 
-        where TEntity : Entity<TId> 
+        where TEntity : class, IHaveId<TId> 
         where TValidator : AbstractValidator<TEntity>
     {
         readonly TValidator Validator;
@@ -32,7 +32,7 @@ namespace ConditionMonitoringAPI.Abstract
                 return BadRequest(e.Message);
             }
 
-            entity = SetCreatedAndUpdatedTimes(entity, DateTimeOffset.Now);
+           // entity = SetCreatedAndUpdatedTimes(entity, DateTimeOffset.Now);
 
             Repository.Add(entity);
             Context.SaveChanges();
@@ -58,7 +58,7 @@ namespace ConditionMonitoringAPI.Abstract
             if (entity is null)
                 return NotFound();
 
-            entity.DateUpdated = DateTimeOffset.Now;
+            //entity.DateUpdated = DateTimeOffset.Now;
 
             entityDelta.Patch(entity);
 
@@ -82,7 +82,7 @@ namespace ConditionMonitoringAPI.Abstract
             try
             {
                 update = Sanitize(update);
-                update.DateUpdated = DateTimeOffset.Now;
+               // update.DateUpdated = DateTimeOffset.Now;
             }
             catch (Exception e)
             {
@@ -141,11 +141,11 @@ namespace ConditionMonitoringAPI.Abstract
             return entity;
         }
 
-        public TEntity SetCreatedAndUpdatedTimes(TEntity entity, DateTimeOffset now)
-        {
-            entity.DateCreated = now;
-            entity.DateUpdated = now;
-            return entity;
-        }
+        //public TEntity SetCreatedAndUpdatedTimes(TEntity entity, DateTimeOffset now)
+        //{
+        //    entity.DateCreated = now;
+        //    entity.DateUpdated = now;
+        //    return entity;
+        //}
     }
 }

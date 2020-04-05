@@ -1,4 +1,4 @@
-﻿using Domain.Abstract;
+﻿using Domain.Interfaces;
 using Microsoft.AspNet.OData;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace ConditionMonitoringAPI.Abstract
 {
-    public abstract class ReadOnlyController<TEntity, TId> : ODataController where TEntity : Entity<TId>
+    public abstract class ReadOnlyController<TEntity, TId> : ODataController where TEntity : class, IHaveId<TId>
     {
         readonly protected DbSet<TEntity> Repository;
         readonly protected DbContext Context;

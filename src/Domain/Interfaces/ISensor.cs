@@ -4,8 +4,7 @@ using System.Text;
 
 namespace Domain.Interfaces
 {
-    public interface IHaveId<TId>
+    class ISensor
     {
-        public TId Id { get; set; }
     }
 }
