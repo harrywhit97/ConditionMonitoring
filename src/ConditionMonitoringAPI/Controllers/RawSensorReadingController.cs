@@ -1,10 +1,8 @@
 ﻿using ConditionMonitoringAPI.Models;
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace ConditionMonitoringAPI.Controllers
 {
@@ -13,7 +11,7 @@ namespace ConditionMonitoringAPI.Controllers
     {
         [HttpPost]
         [Route("batch")]
-        public IActionResult Post([FromBody]DTORawSensorReading dtoReadings)
+        public IActionResult Post([FromBody]DTORawSensorReadingBatch dtoReadingsBatch)
         {
             int pin;
             try
@@ -46,16 +44,6 @@ namespace ConditionMonitoringAPI.Controllers
                 throw new Exception("Header 'pin' was not an integer");
 
             return pin;
-        }
-
-        IList<RawSensorReading> SetValues(DTORawSensorReading dTORawSensorReading, string ip, int pin, string address)
-        {
-            var readings = dTORawSensorReading.Readings;
-            for (int i = 0; i < readings.Count; i++)
-            {
-            }
-
-            return null;
         }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using Domain.Interfaces;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Domain.Models
 {
@@ -10,11 +8,6 @@ namespace Domain.Models
         public long Id { get; set; }
         public string Name { get; set; }
         public string IpAddress { get; set; }
-        public virtual IList<ISensor> Sensors { get; set; }
-
-        public Board()
-        {
-            Sensors = new List<ISensor>();
-        }
+        public ICollection<LightSensor> Sensors { get; set; }
     }
 }

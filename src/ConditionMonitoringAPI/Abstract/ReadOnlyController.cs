@@ -20,7 +20,7 @@ namespace ConditionMonitoringAPI.Abstract
         }
 
         [EnableQuery]
-        public virtual IEnumerable<TEntity> Get() => Repository.AsEnumerable();
+        public virtual IEnumerable<TEntity> Get() => Repository.AsQueryable();
 
         [EnableQuery]
         public virtual ActionResult<TEntity> Get([FromODataUri] TId key)

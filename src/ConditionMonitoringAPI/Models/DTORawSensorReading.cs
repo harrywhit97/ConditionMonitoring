@@ -1,10 +1,13 @@
-﻿using Domain.Models;
-using System.Collections.Generic;
+﻿using System;
 
-namespace ConditionMonitoringAPI.Models
+namespace Domain.Models
 {
     public class DTORawSensorReading
     {
-        public IList<RawSensorReading> Readings { get; set; }
+        public DateTimeOffset? TimeStamp { get; set; }
+        public decimal Reading { get; set; }
+        public long IpAddress { get; set; }
+        public long Pin { get; set; }
+        public long CommsType { get; set; } // Enum?
     }
 }

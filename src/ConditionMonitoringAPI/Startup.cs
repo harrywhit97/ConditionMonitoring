@@ -65,7 +65,9 @@ namespace ConditionMonitoringAPI
         IEdmModel GetEdmModel()
         {
             var odataBuilder = new ODataConventionModelBuilder();
-            odataBuilder.EntitySet<LightSensorReading>("LightSensorReading");
+            odataBuilder.EntitySet<LightSensorReading>(nameof(LightSensorReading));
+            odataBuilder.EntitySet<LightSensor>(nameof(LightSensor));
+            odataBuilder.EntitySet<Board>(nameof(Board));
             return odataBuilder.GetEdmModel();
         }
     }

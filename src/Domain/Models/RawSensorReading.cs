@@ -3,12 +3,10 @@ using System;
 
 namespace Domain.Models
 {
-    public class RawSensorReading
+    public class RawSensorReading : ISensorReading
     {
-        public DateTimeOffset? TimeStamp { get; set; }
-        public decimal Reading { get; set; }
-        public long IpAddress { get; set; }
-        public long Pin { get; set; }
-        public long CommsType { get; set; } // Enum?
+        public virtual LightSensor Sensor { get; set; }
+        public DateTimeOffset ReadingTime { get; set; }
+        public decimal RawReading { get; set; }
     }
 }
