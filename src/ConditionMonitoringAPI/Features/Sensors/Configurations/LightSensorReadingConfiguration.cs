@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ConditionMonitoringAPI.Configurations
+namespace ConditionMonitoringAPI.Features.Sensors.Configurations
 {
     public class LightSensorReadingConfiguration : IEntityTypeConfiguration<LightSensorReading>
     {

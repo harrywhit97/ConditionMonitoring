@@ -1,9 +1,7 @@
-using ConditionMonitoringAPI.Controllers;
-using ConditionMonitoringAPI.Validators;
+using ConditionMonitoringAPI.Features.Readings.Controllers;
+using ConditionMonitoringAPI.Features.Sensors.Validators;
 using Domain.Interfaces;
-using Domain.Models;
 using FluentAssertions;
-using FluentValidation.Results;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;

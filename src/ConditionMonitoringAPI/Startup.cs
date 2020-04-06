@@ -1,6 +1,6 @@
 using System.Linq;
+using ConditionMonitoringAPI.Features.Sensors.Validators;
 using ConditionMonitoringAPI.Services;
-using ConditionMonitoringAPI.Validators;
 using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.AspNet.OData.Builder;

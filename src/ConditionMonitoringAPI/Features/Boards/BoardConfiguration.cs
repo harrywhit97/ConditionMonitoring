@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace ConditionMonitoringAPI.Configurations
+namespace ConditionMonitoringAPI.Features.Boards.Configurations
 {
     public class BoardConfiguration : IEntityTypeConfiguration<Board>
     {

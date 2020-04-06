@@ -2,7 +2,7 @@
 using FluentValidation;
 using System;
 
-namespace ConditionMonitoringAPI.Validators
+namespace ConditionMonitoringAPI.Features.Sensors.Validators
 {
     public class LightSensorReadingValidator : AbstractValidator<LightSensorReading>
     {

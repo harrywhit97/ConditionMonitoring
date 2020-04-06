@@ -1,8 +1,8 @@
 ﻿using ConditionMonitoringAPI.Abstract;
-using ConditionMonitoringAPI.Validators;
+using ConditionMonitoringAPI.Features.Sensors.Validators;
 using Domain.Models;
 
-namespace ConditionMonitoringAPI.Controllers
+namespace ConditionMonitoringAPI.Features.Readings.Controllers
 {
     public class LightSensorReadingController : GenericController<LightSensorReading, long, LightSensorReadingValidator>
     {
