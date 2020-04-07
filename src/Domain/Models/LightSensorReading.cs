@@ -1,11 +1,7 @@
-﻿using Domain.Interfaces;
-using System;
-
-namespace Domain.Models
+﻿namespace Domain.Models
 {
-    public class LightSensorReading : RawSensorReading, IHaveId<long>
+    public class LightSensorReading : RawSensorReading
     {
-        public long Id { get; set; }
         public int Brightness { get; set; }
     }
 }
