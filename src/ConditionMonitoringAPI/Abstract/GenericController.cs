@@ -33,7 +33,7 @@ namespace ConditionMonitoringAPI.Abstract
             Repository = Context.Set<T>();
         }
 
-        [HttpGet]
+        [HttpGet("{Id}")]
         public virtual async Task<IActionResult> Get([FromQuery] TId Id)
         {
             T entity;
