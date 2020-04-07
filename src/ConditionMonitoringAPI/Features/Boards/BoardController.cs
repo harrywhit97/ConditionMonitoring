@@ -10,7 +10,6 @@ namespace ConditionMonitoringAPI.Features.Boards.Controllers
         public BoardController(ConditionMonitoringDbContext conditionMonitoringDbContext, BoardValidator validator, IMediator mediator)
             :base(conditionMonitoringDbContext, validator, mediator)
         {
-
         }
     }
 }

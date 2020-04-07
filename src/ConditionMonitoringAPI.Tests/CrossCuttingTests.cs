@@ -10,7 +10,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Threading;
-using static ConditionMonitoringAPI.Features.Crosscutting.Commands.CreateEntity<T, TId>;
 
 namespace ConditionMonitoringAPI.Tests
 {

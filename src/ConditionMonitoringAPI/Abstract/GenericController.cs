@@ -11,26 +11,50 @@ using FluentValidation.Results;
 using MediatR;
 using ConditionMonitoringAPI.Features.Crosscutting.Commands;
 using System.Threading;
+using ConditionMonitoringAPI.Features.Crosscutting.Queries;
 
 namespace ConditionMonitoringAPI.Abstract
 {
-    public abstract class GenericController<TEntity, TId, TValidator> : ReadOnlyController<TEntity, TId>
-        where TEntity : class, IHaveId<TId> 
-        where TValidator : AbstractValidatorWrapper<TEntity>
+    [Route("api/[controller]")]
+    public abstract class GenericController<T, TId, TValidator> : ControllerBase
+        where T : class, IHaveId<TId> 
+        where TValidator : AbstractValidatorWrapper<T>
     {
         readonly TValidator Validator;
+        readonly DbContext Context;
+        readonly DbSet<T> Repository;
+        readonly IMediator Mediator;
 
-        public GenericController(DbContext context, TValidator validator, IMediator mediator) 
-            : base(context, mediator)
+        public GenericController(DbContext context, TValidator validator, IMediator mediator)
         {
+            Context = context;
             Validator = validator;
+            Mediator = mediator;
+            Repository = Context.Set<T>();
         }
 
-        public virtual async Task<IActionResult> Post([FromBody] TEntity entity)
+        [HttpGet]
+        public virtual async Task<IActionResult> Get([FromQuery] TId Id)
+        {
+            T entity;
+
+            try
+            {
+                entity = await Mediator.Send(new GetById<T, TId>(Id));
+            }
+            catch (Exception e)
+            {
+                return NotFound(e.Message);
+            }
+            return Ok(entity);
+        }
+
+        [HttpPost]
+        public virtual async Task<IActionResult> Post([FromBody] T entity)
         {
             try
             {
-                return Created(await Mediator.Send(new CreateEntity<TEntity, TId>(entity), new CancellationToken()));
+                return Ok(await Mediator.Send(new CreateEntity<T, TId>(entity), new CancellationToken()));
             }
             catch(Exception e)
             {
@@ -38,6 +62,7 @@ namespace ConditionMonitoringAPI.Abstract
             }
         }
 
+        [HttpDelete]
         public virtual IActionResult Delete([FromODataUri] long key)
         {
             var entity = Repository.Find(key); ;
@@ -50,7 +75,8 @@ namespace ConditionMonitoringAPI.Abstract
             return Ok();
         }
 
-        public async Task<IActionResult> Patch([FromODataUri] TId key, [FromBody] Delta<TEntity> entityDelta)
+        [HttpPatch]
+        public async Task<IActionResult> Patch([FromODataUri] TId key, [FromBody] Delta<T> entityDelta)
         {
             var entity = Repository.Find(key);
 
@@ -71,10 +97,11 @@ namespace ConditionMonitoringAPI.Abstract
                     throw;
             }
 
-            return Updated(entity);
+            return Ok(entity);
         }
 
-        public async Task<IActionResult> Put([FromODataUri]TId key, [FromBody] TEntity update)
+        [HttpPut]
+        public async Task<IActionResult> Put([FromODataUri]TId key, [FromBody] T update)
         {
             try
             {
@@ -101,12 +128,12 @@ namespace ConditionMonitoringAPI.Abstract
                 else
                     throw;
             }
-            return Updated(update);
+            return Ok(update);
         }
 
         bool EntityExists(TId key) => Repository.Any(x => x.Id.Equals(key));
         
-        void ValidateEntity(TEntity entity) 
+        void ValidateEntity(T entity) 
         { 
             var result = Validator.Validate(entity);
             
