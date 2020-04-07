@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using FluentValidation;
 using Microsoft.AspNet.OData;
 using System;
 using System.Text;
@@ -9,16 +8,20 @@ using Domain.Interfaces;
 using System.Threading.Tasks;
 using ConditionMonitoringAPI.Utils;
 using FluentValidation.Results;
+using MediatR;
+using ConditionMonitoringAPI.Features.Crosscutting.Commands;
+using System.Threading;
 
 namespace ConditionMonitoringAPI.Abstract
 {
     public abstract class GenericController<TEntity, TId, TValidator> : ReadOnlyController<TEntity, TId>
         where TEntity : class, IHaveId<TId> 
-        where TValidator : AbstractValidator<TEntity>
+        where TValidator : AbstractValidatorWrapper<TEntity>
     {
         readonly TValidator Validator;
 
-        public GenericController(DbContext context, TValidator validator) : base(context)
+        public GenericController(DbContext context, TValidator validator, IMediator mediator) 
+            : base(context, mediator)
         {
             Validator = validator;
         }
@@ -27,17 +30,12 @@ namespace ConditionMonitoringAPI.Abstract
         {
             try
             {
-                entity = SanatizeData.SanitizeStrings(entity);
-                ValidateEntity(entity);
+                return Created(await Mediator.Send(new CreateEntity<TEntity, TId>(entity), new CancellationToken()));
             }
-            catch (Exception e)
+            catch(Exception e)
             {
                 return BadRequest(e.Message);
             }
-
-            Repository.Add(entity);
-            await Context.SaveChangesAsync();
-            return Created(entity);
         }
 
         public virtual IActionResult Delete([FromODataUri] long key)
@@ -111,7 +109,7 @@ namespace ConditionMonitoringAPI.Abstract
         void ValidateEntity(TEntity entity) 
         { 
             var result = Validator.Validate(entity);
-
+            
             if (!result.IsValid)
                 throw new ArgumentException(GetValidationErrorString(result));
         }

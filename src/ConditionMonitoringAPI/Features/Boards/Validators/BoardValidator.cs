@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using ConditionMonitoringAPI.Abstract;
+using Domain.Models;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ConditionMonitoringAPI.Features.Boards.Validators
 {
-    public class BoardValidator : AbstractValidator<Board>
+    public class BoardValidator : AbstractValidatorWrapper<Board>
     {
         public BoardValidator()
         {

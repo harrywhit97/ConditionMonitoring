@@ -1,7 +1,5 @@
-using ConditionMonitoringAPI.Features.Readings.Controllers;
-using ConditionMonitoringAPI.Features.Sensors.Validators;
+using ConditionMonitoringAPI.Features.SensorsReadings.Validators;
 using Domain.Interfaces;
-using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -24,33 +22,6 @@ namespace ConditionMonitoringAPI.Tests
             Context = DbContextMocker.GetConditionMonitoringDbContextMock("ConditionMonitoring", DateTime.Object);
 
             Validator = new LightSensorReadingValidator();
-        }
-
-        [TestMethod]
-        public void TestGetLightSensorReadings()
-        {
-            //Arrange
-            var controller = new LightSensorReadingController(Context, Validator);
-
-            //Act
-            var response = controller.Get();
-
-            //Assert
-            response.Should().NotBeNull();
-            response.Should().NotBeEmpty();
-        }
-
-        [TestMethod]
-        public void TestGetLightSensorReadingById()
-        {
-            //Arrange
-            var controller = new LightSensorReadingController(Context, Validator);
-
-            //Act
-            var response = controller.Get(0);
-
-            //Assert
-            response.Should().NotBeNull();
         }
     }
 }

@@ -1,5 +1,8 @@
 ﻿using ConditionMonitoringAPI.Dtos;
+using ConditionMonitoringAPI.Features.Boards.Queries;
 using ConditionMonitoringAPI.Features.Readings.Commands;
+using Domain.Interfaces;
+using Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -9,7 +12,7 @@ namespace ConditionMonitoringAPI.Features.Readings.Controllers
     [Route("api/[controller]")]
     public class RawSensorReadingController : ControllerBase
     {
-        IMediator Mediator;
+        readonly IMediator Mediator;
 
         public RawSensorReadingController(IMediator mediator)
         {
@@ -37,26 +40,30 @@ namespace ConditionMonitoringAPI.Features.Readings.Controllers
         }
 
         [HttpPost]
-        public IActionResult Post([FromBody]RawSensorReadingDto reading)
+        public IActionResult Post([FromBody]RawSensorReadingDto readingDto)
         {
             int pin;
+            Board board;
+            ISensorReading reading;
             try
             {
                 pin = GetPinFromHeaders();
+
+                readingDto.Pin = pin;
+                readingDto.IpAddress = GetIpFromRequest();
+
+                board = Mediator.Send(new GetBoardByIp(readingDto.IpAddress)).Result;
+                reading = Mediator.Send(new CreateReading(readingDto, board)).Result;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
-
-            reading.Pin = pin;
-            reading.IpAddress = GetIpFromRequest();
-
-            var result = Mediator.Send(new CreateReading(reading)).Result;
-
-            if (result is null)
+            
+            if (reading is null)
                 return BadRequest();
-            return Ok(result);
+
+            return Ok(reading);
         }
 
         int GetPinFromHeaders()

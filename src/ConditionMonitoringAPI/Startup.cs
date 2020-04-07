@@ -1,8 +1,12 @@
 using System.Linq;
-using ConditionMonitoringAPI.Features.Sensors.Validators;
+using AutoMapper;
+using ConditionMonitoringAPI.Features.Readings;
+using ConditionMonitoringAPI.Features.SensorsReadings.Validators;
 using ConditionMonitoringAPI.Services;
 using Domain.Interfaces;
 using Domain.Models;
+using FluentValidation.AspNetCore;
+using MediatR;
 using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -36,9 +40,10 @@ namespace ConditionMonitoringAPI
 
             services.AddMvc().AddControllersAsServices();
 
-            services.AddScoped<LightSensorReadingValidator>();
-
             services.AddTransient<IDateTime, DateTimeService>();
+            services.AddTransient<LightSensorReadingValidator>();
+            services.AddAutoMapper(typeof(ReadingsProfile));
+            services.AddMediatR(typeof(Startup));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

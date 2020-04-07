@@ -1,10 +1,11 @@
-﻿using Domain.Models;
+﻿using ConditionMonitoringAPI.Abstract;
+using Domain.Models;
 using FluentValidation;
 using System;
 
-namespace ConditionMonitoringAPI.Features.Sensors.Validators
+namespace ConditionMonitoringAPI.Features.SensorsReadings.Validators
 {
-    public class LightSensorReadingValidator : AbstractValidator<LightSensorReading>
+    public class LightSensorReadingValidator : AbstractValidatorWrapper<LightSensorReading>
     {
         public LightSensorReadingValidator()
         {
