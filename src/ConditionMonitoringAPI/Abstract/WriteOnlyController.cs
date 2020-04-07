@@ -12,17 +12,22 @@ using FluentValidation.Results;
 
 namespace ConditionMonitoringAPI.Abstract
 {
-    public abstract class GenericController<TEntity, TId, TValidator> : ReadOnlyController<TEntity, TId>
+    [Route("api/[controller]")]
+    public abstract class WriteOnlyController<TEntity, TId, TValidator> : ControllerBase
         where TEntity : class, IHaveId<TId> 
         where TValidator : AbstractValidator<TEntity>
     {
         readonly TValidator Validator;
+        readonly DbContext Context;
+        readonly DbSet<TEntity> Repository;
 
-        public GenericController(DbContext context, TValidator validator) : base(context)
+        public WriteOnlyController(DbContext context, TValidator validator)
         {
+            Context = context;
             Validator = validator;
         }
 
+        [HttpPost]
         public virtual async Task<IActionResult> Post([FromBody] TEntity entity)
         {
             try
@@ -37,9 +42,10 @@ namespace ConditionMonitoringAPI.Abstract
 
             Repository.Add(entity);
             await Context.SaveChangesAsync();
-            return Created(entity);
+            return Ok(entity);
         }
 
+        [HttpDelete]
         public virtual IActionResult Delete([FromODataUri] long key)
         {
             var entity = Repository.Find(key); ;
@@ -52,6 +58,7 @@ namespace ConditionMonitoringAPI.Abstract
             return Ok();
         }
 
+        [HttpPatch]
         public async Task<IActionResult> Patch([FromODataUri] TId key, [FromBody] Delta<TEntity> entityDelta)
         {
             var entity = Repository.Find(key);
@@ -73,9 +80,10 @@ namespace ConditionMonitoringAPI.Abstract
                     throw;
             }
 
-            return Updated(entity);
+            return Ok(entity);
         }
 
+        [HttpPut]
         public async Task<IActionResult> Put([FromODataUri]TId key, [FromBody] TEntity update)
         {
             try
@@ -103,7 +111,7 @@ namespace ConditionMonitoringAPI.Abstract
                 else
                     throw;
             }
-            return Updated(update);
+            return Ok(update);
         }
 
         bool EntityExists(TId key) => Repository.Any(x => x.Id.Equals(key));

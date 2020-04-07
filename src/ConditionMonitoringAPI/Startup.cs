@@ -5,13 +5,16 @@ using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
+using Microsoft.AspNet.OData.Formatter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Net.Http.Headers;
 using Microsoft.OData.Edm;
+using Microsoft.OpenApi.Models;
 
 namespace ConditionMonitoringAPI
 {
@@ -36,6 +39,27 @@ namespace ConditionMonitoringAPI
 
             services.AddMvc().AddControllersAsServices();
 
+
+            //Work around to enable swagger
+            services.AddMvcCore(options =>
+            {
+                foreach (var outputFormatter in options.OutputFormatters.OfType<ODataOutputFormatter>().Where(_ => _.SupportedMediaTypes.Count == 0))
+                {
+                    outputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/prs.odatatestxx-odata"));
+                }
+                foreach (var inputFormatter in options.InputFormatters.OfType<ODataInputFormatter>().Where(_ => _.SupportedMediaTypes.Count == 0))
+                {
+                    inputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/prs.odatatestxx-odata"));
+                }
+            });
+
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+            });
+
+
             services.AddScoped<LightSensorReadingValidator>();
 
             services.AddTransient<IDateTime, DateTimeService>();
@@ -50,12 +74,20 @@ namespace ConditionMonitoringAPI
 
             app.UseHttpsRedirection();
 
+            app.UseSwagger();
+
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthorization();            
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.EnableDependencyInjection();
                 endpoints.MapControllers();
                 endpoints.Select().Filter().OrderBy().Count().MaxTop(10).Expand();
                 endpoints.MapODataRoute("api", "api", GetEdmModel());

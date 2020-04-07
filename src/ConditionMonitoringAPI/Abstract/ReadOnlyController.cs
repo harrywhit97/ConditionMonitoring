@@ -7,6 +7,8 @@ using System.Linq;
 
 namespace ConditionMonitoringAPI.Abstract
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public abstract class ReadOnlyController<TEntity, TId> : ODataController where TEntity : class, IHaveId<TId>
     {
         readonly protected DbSet<TEntity> Repository;

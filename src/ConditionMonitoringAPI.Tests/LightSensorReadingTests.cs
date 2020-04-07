@@ -32,7 +32,7 @@ namespace ConditionMonitoringAPI.Tests
         public void TestGetLightSensorReadings()
         {
             //Arrange
-            var controller = new LightSensorReadingController(Context, Validator);
+            var controller = new LightSensorReadingOdataController(Context);
 
             //Act
             var response = controller.Get();
@@ -46,7 +46,7 @@ namespace ConditionMonitoringAPI.Tests
         public void TestGetLightSensorReadingById()
         {
             //Arrange
-            var controller = new LightSensorReadingController(Context, Validator);
+            var controller = new LightSensorReadingOdataController(Context);
 
             //Act
             var response = controller.Get(0);
