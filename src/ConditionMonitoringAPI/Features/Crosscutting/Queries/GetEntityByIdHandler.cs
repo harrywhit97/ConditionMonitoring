@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ConditionMonitoringAPI.Features.Crosscutting.Queries
 {
-    public class GetEntityByIdHandler<T, TId> : AbstractRequestHandler<T, TId, GetEntityById<T, TId>>
+    public abstract class GetEntityByIdHandler<T, TId> : AbstractRequestHandler<T, TId, GetEntityById<T, TId>>
         where T : class, IHasId<TId>
             {
         public GetEntityByIdHandler(DbContext dbContext, ILogger logger, IMapper mapper)

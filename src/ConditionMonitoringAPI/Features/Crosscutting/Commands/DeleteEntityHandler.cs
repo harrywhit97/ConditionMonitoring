@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
 {
 
-    public abstract class DeleteEntityHandler<T, TId> : AbstractRequestHandler<T, TId, DeleteEntity<T, TId>>
+    public abstract class DeleteEntityHandler<T, TId> : AbstractRequestHandler<T, TId, DeleteEntity<T, TId>, bool>
         where T : class, IHasId<TId>
     {
         public DeleteEntityHandler(DbContext dbContext, ILogger logger, IMapper mapper)
@@ -19,7 +19,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
         {
         }
 
-        public override async Task<T> Handle(DeleteEntity<T, TId> request, CancellationToken cancellationToken)
+        public override async Task<bool> Handle(DeleteEntity<T, TId> request, CancellationToken cancellationToken)
         {
             var entity = await Context.Set<T>().FindAsync(request.Id);
 
@@ -28,7 +28,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
 
             Context.Set<T>().Remove(entity);
             Context.SaveChanges();
-            return null;
+            return true;
         }
     }
 }

@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
 {
 
-    public class CreateEntityFromDtoHandler<T, TId, TValidator, TDto> : AbstractRequestHandler<T, TId, CreateEntityFromDto<T, TId, TDto>>
+    public abstract class CreateEntityFromDtoHandler<T, TId, TValidator, TDto> : AbstractRequestHandler<T, TId, CreateEntityFromDto<T, TId, TDto>>
         where T : class, IHasId<TId>
         where TValidator : AbstractValidatorWrapper<T>
     {

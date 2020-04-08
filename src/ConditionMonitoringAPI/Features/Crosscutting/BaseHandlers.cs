@@ -108,14 +108,14 @@ namespace ConditionMonitoringAPI.Features.Crosscutting
             }
         }
 
-        public abstract class DeleteEntityHandler : AbstractRequestHandler<T, TId, DeleteEntity<T, TId>>
+        public abstract class DeleteEntityHandler : AbstractRequestHandler<T, TId, DeleteEntity<T, TId>, bool>
         {
             public DeleteEntityHandler(DbContext dbContext, ILogger logger, IMapper mapper)
                 : base(dbContext, logger, mapper)
             {
             }
 
-            public override async Task<T> Handle(DeleteEntity<T, TId> request, CancellationToken cancellationToken)
+            public override async Task<bool> Handle(DeleteEntity<T, TId> request, CancellationToken cancellationToken)
             {
                 var entity = await Context.Set<T>().FindAsync(request.Id);
 
@@ -124,7 +124,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting
 
                 Context.Set<T>().Remove(entity);
                 Context.SaveChanges();
-                return null;
+                return true;
             }
         }
     }
