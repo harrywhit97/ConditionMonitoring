@@ -13,7 +13,7 @@ namespace ConditionMonitoringAPI.Features.Sensors
     {
         public class GetSensorByIdHandler : GetEntityByIdHandler<Sensor<ISensorReading>, long>
         {
-            public GetSensorByIdHandler(ConditionMonitoringDbContext context, ILogger logger, IMapper mapper)
+            public GetSensorByIdHandler(ConditionMonitoringDbContext context, ILogger<GetSensorByIdHandler> logger, IMapper mapper)
                 : base(context, logger, mapper)
             {
             }
@@ -21,7 +21,7 @@ namespace ConditionMonitoringAPI.Features.Sensors
 
         public class CreateSensorHandler : CreateEntityFromDtoHandler<Sensor<ISensorReading>, long, SensorValidator, SensorDto>
         {
-            public CreateSensorHandler(ConditionMonitoringDbContext context, ILogger logger, SensorValidator validator, IMapper mapper)
+            public CreateSensorHandler(ConditionMonitoringDbContext context, ILogger<CreateSensorHandler> logger, SensorValidator validator, IMapper mapper)
                 : base(context, logger, validator, mapper)
             {
             }
@@ -29,7 +29,7 @@ namespace ConditionMonitoringAPI.Features.Sensors
 
         public class UpdateSensorHandler : UpdateEntityFromDtoHandler<Sensor<ISensorReading>, long, SensorValidator, SensorDto>
         {
-            public UpdateSensorHandler(ConditionMonitoringDbContext context, ILogger logger, SensorValidator validator, IMapper mapper)
+            public UpdateSensorHandler(ConditionMonitoringDbContext context, ILogger<UpdateSensorHandler> logger, SensorValidator validator, IMapper mapper)
                 : base(context, logger, validator, mapper)
             {
             }
@@ -37,7 +37,7 @@ namespace ConditionMonitoringAPI.Features.Sensors
 
         public class DeleteSensorByIdHandler : DeleteEntityHandler<Sensor<ISensorReading>, long>
         {
-            public DeleteSensorByIdHandler(ConditionMonitoringDbContext context, ILogger logger, IMapper mapper)
+            public DeleteSensorByIdHandler(ConditionMonitoringDbContext context, ILogger<DeleteSensorByIdHandler> logger, IMapper mapper)
                 : base(context, logger, mapper)
             {
             }

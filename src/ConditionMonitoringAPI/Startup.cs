@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using AutoMapper;
 using ConditionMonitoringAPI.Features.Boards.Validators;
@@ -74,7 +75,7 @@ namespace ConditionMonitoringAPI
 
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddAutoMapper(typeof(FeaturesProfile));
-            services.AddMediatR(typeof(Startup));
+            services.AddMediatR(Assembly.GetExecutingAssembly());
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -18,7 +18,7 @@ namespace ConditionMonitoringAPI.Features.Boards
     {
         public class GetBoardByIdHandler : GetEntityByIdHandler<Board, long>
         {
-            public GetBoardByIdHandler(ConditionMonitoringDbContext context, ILogger logger, IMapper mapper)
+            public GetBoardByIdHandler(ConditionMonitoringDbContext context, ILogger<GetBoardByIdHandler> logger, IMapper mapper)
                 :base(context, logger, mapper)
             {
             }
@@ -26,7 +26,7 @@ namespace ConditionMonitoringAPI.Features.Boards
 
         public class CreateBoardHandler : CreateEntityFromDtoHandler<Board, long, BoardValidator, BoardDto>
         {
-            public CreateBoardHandler(ConditionMonitoringDbContext context, ILogger logger, BoardValidator validator, IMapper mapper)
+            public CreateBoardHandler(ConditionMonitoringDbContext context, ILogger<CreateBoardHandler> logger, BoardValidator validator, IMapper mapper)
                 : base(context, logger, validator, mapper)
             {
             }
@@ -34,7 +34,7 @@ namespace ConditionMonitoringAPI.Features.Boards
 
         public class UpdateBoardHandler : UpdateEntityFromDtoHandler<Board, long, BoardValidator, BoardDto>
         {
-            public UpdateBoardHandler(ConditionMonitoringDbContext context, ILogger logger, BoardValidator validator, IMapper mapper)
+            public UpdateBoardHandler(ConditionMonitoringDbContext context, ILogger<UpdateBoardHandler> logger, BoardValidator validator, IMapper mapper)
                 : base(context, logger, validator, mapper)
             {
             }
@@ -42,7 +42,7 @@ namespace ConditionMonitoringAPI.Features.Boards
 
         public class DeleteBoardByIdHandler : DeleteEntityHandler<Board, long>
         {
-            public DeleteBoardByIdHandler(ConditionMonitoringDbContext context, ILogger logger, IMapper mapper)
+            public DeleteBoardByIdHandler(ConditionMonitoringDbContext context, ILogger<DeleteBoardByIdHandler> logger, IMapper mapper)
                 : base(context, logger, mapper)
             {
             }
@@ -50,7 +50,7 @@ namespace ConditionMonitoringAPI.Features.Boards
 
         public class GetBoardByIpHandler : AbstractRequestHandler<Board, long, GetBoardByIp>
         {
-            public GetBoardByIpHandler(ConditionMonitoringDbContext dbContext, ILogger logger, IMapper mapper)
+            public GetBoardByIpHandler(ConditionMonitoringDbContext dbContext, ILogger<GetBoardByIpHandler> logger, IMapper mapper)
                 : base(dbContext, logger, mapper)
             {
             }

@@ -3,10 +3,8 @@ using ConditionMonitoringAPI.Exceptions;
 using ConditionMonitoringAPI.Features.Crosscutting.Commands;
 using ConditionMonitoringAPI.Features.Crosscutting.Queries;
 using ConditionMonitoringAPI.Features.Readings;
-using ConditionMonitoringAPI.Features.Readings.Dtos;
 using ConditionMonitoringAPI.Features.Sensors;
 using ConditionMonitoringAPI.Features.Sensors.Dtos;
-using ConditionMonitoringAPI.Features.SensorsReadings.Validators;
 using Domain.Enums;
 using Domain.Interfaces;
 using Domain.Models;
@@ -29,7 +27,6 @@ namespace ConditionMonitoringAPI.Tests
         DateTimeOffset DateTimeDefualt;
         ConditionMonitoringDbContext Context;
         CancellationToken CancToken => new CancellationToken();
-        Mock<ILogger> Logger;
         IMapper Mapper;
 
         [TestInitialize]
@@ -38,8 +35,6 @@ namespace ConditionMonitoringAPI.Tests
             DateTimeDefualt = new DateTimeOffset(2020, 04, 04, 13, 12, 11, TimeSpan.Zero);
             DateTime = Utils.Utils.GetMockDateTime(DateTimeDefualt);
             Context = DbContextMocker.GetConditionMonitoringDbContextMock("ConditionMonitoring", DateTime.Object);
-
-            Logger = new Mock<ILogger>();
 
             var myProfile = new FeaturesProfile();
             var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
@@ -50,7 +45,10 @@ namespace ConditionMonitoringAPI.Tests
         public void GetExistingSensorByIdSucceeds()
         {
             //Arrange
-            var handler = new GetSensorByIdHandler(Context, Logger.Object, Mapper);
+            var logger = new Mock<ILogger<GetSensorByIdHandler>>();
+
+
+            var handler = new GetSensorByIdHandler(Context, logger.Object, Mapper);
             var query = new GetEntityById<Sensor<ISensorReading>, long>(1);
 
             //Act
@@ -64,7 +62,9 @@ namespace ConditionMonitoringAPI.Tests
         public void GetNonExistingSensorByIdFailsWithException()
         {
             //Arrange
-            var handler = new GetSensorByIdHandler(Context, Logger.Object, Mapper);
+            var logger = new Mock<ILogger<GetSensorByIdHandler>>();
+
+            var handler = new GetSensorByIdHandler(Context, logger.Object, Mapper);
             var query = new GetEntityById<Sensor<ISensorReading>, long>(0);
 
             //Act
@@ -92,7 +92,9 @@ namespace ConditionMonitoringAPI.Tests
             var validatorMock = new Mock<SensorValidator>();
             validatorMock.Setup(x => x.Validate(It.IsAny<Sensor<ISensorReading>>())).Returns(validatorResultMock.Object);
 
-            var handler = new CreateSensorHandler(Context, Logger.Object, validatorMock.Object, Mapper);
+            var logger = new Mock<ILogger<CreateSensorHandler>>();
+
+            var handler = new CreateSensorHandler(Context, logger.Object, validatorMock.Object, Mapper);
             var query = new CreateEntityFromDto<Sensor<ISensorReading>, long, SensorDto>(entity);
 
             //Act
@@ -117,7 +119,9 @@ namespace ConditionMonitoringAPI.Tests
             var validatorMock = new Mock<SensorValidator>();
             validatorMock.Setup(x => x.Validate(It.IsAny<Sensor<ISensorReading>>())).Returns(validatorResultMock.Object);
 
-            var handler = new CreateSensorHandler(Context, Logger.Object, validatorMock.Object, Mapper);
+            var logger = new Mock<ILogger<CreateSensorHandler>>();
+
+            var handler = new CreateSensorHandler(Context, logger.Object, validatorMock.Object, Mapper);
             var query = new CreateEntityFromDto<Sensor<ISensorReading>, long, SensorDto>(entity);
 
             //Act
@@ -135,8 +139,10 @@ namespace ConditionMonitoringAPI.Tests
 
             Context.Set<Sensor<ISensorReading>>().Add(entity);
             Context.SaveChanges();
-            
-            var handler = new DeleteSensorByIdHandler(Context, Logger.Object, Mapper);
+
+            var logger = new Mock<ILogger<DeleteSensorByIdHandler>>();
+
+            var handler = new DeleteSensorByIdHandler(Context, logger.Object, Mapper);
             var query = new DeleteEntity<Sensor<ISensorReading>, long>(42);
 
             //Act
@@ -150,7 +156,10 @@ namespace ConditionMonitoringAPI.Tests
         public void DeleteNonExistingSensorFailsWithException()
         {
             //Arrange
-            var handler = new DeleteSensorByIdHandler(Context, Logger.Object, Mapper);
+
+            var logger = new Mock<ILogger<DeleteSensorByIdHandler>>();
+
+            var handler = new DeleteSensorByIdHandler(Context, logger.Object, Mapper);
             var query = new DeleteEntity<Sensor<ISensorReading>, long>(42);
 
             //Act

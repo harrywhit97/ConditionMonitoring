@@ -10,7 +10,7 @@ namespace ConditionMonitoringAPI.Features.Readings
 {
     public class GetLightSensorReadingByIdHandler : GetEntityByIdHandler<LightSensorReading, long>
     {
-        public GetLightSensorReadingByIdHandler(ConditionMonitoringDbContext context, ILogger logger, IMapper mapper)
+        public GetLightSensorReadingByIdHandler(ConditionMonitoringDbContext context, ILogger<GetLightSensorReadingByIdHandler> logger, IMapper mapper)
             : base(context, logger, mapper)
         {
         }
@@ -18,7 +18,7 @@ namespace ConditionMonitoringAPI.Features.Readings
 
     public class CreateLightSensorReadingHandler : CreateEntityFromDtoHandler<LightSensorReading, long, LightSensorReadingValidator, LightSensorReadingDto>
     {
-        public CreateLightSensorReadingHandler(ConditionMonitoringDbContext context, ILogger logger, LightSensorReadingValidator validator, IMapper mapper)
+        public CreateLightSensorReadingHandler(ConditionMonitoringDbContext context, ILogger<CreateLightSensorReadingHandler> logger, LightSensorReadingValidator validator, IMapper mapper)
             : base(context, logger, validator, mapper)
         {
         }
@@ -26,7 +26,7 @@ namespace ConditionMonitoringAPI.Features.Readings
 
     public class UpdateLightSensorReadingHandler : UpdateEntityFromDtoHandler<LightSensorReading, long, LightSensorReadingValidator, LightSensorReadingDto>
     {
-        public UpdateLightSensorReadingHandler(ConditionMonitoringDbContext context, ILogger logger, LightSensorReadingValidator validator, IMapper mapper)
+        public UpdateLightSensorReadingHandler(ConditionMonitoringDbContext context, ILogger<UpdateLightSensorReadingHandler> logger, LightSensorReadingValidator validator, IMapper mapper)
             : base(context, logger, validator, mapper)
         {
         }
@@ -34,7 +34,7 @@ namespace ConditionMonitoringAPI.Features.Readings
 
     public class DeleteLightSensorReadingByIdHandler : DeleteEntityHandler<LightSensorReading, long>
     {
-        public DeleteLightSensorReadingByIdHandler(ConditionMonitoringDbContext context, ILogger logger, IMapper mapper)
+        public DeleteLightSensorReadingByIdHandler(ConditionMonitoringDbContext context, ILogger<DeleteLightSensorReadingByIdHandler> logger, IMapper mapper)
             : base(context, logger, mapper)
         {
         }

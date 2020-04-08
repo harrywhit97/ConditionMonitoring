@@ -26,7 +26,6 @@ namespace ConditionMonitoringAPI.Tests
         DateTimeOffset DateTimeDefualt;
         ConditionMonitoringDbContext Context;
         CancellationToken CancToken => new CancellationToken();
-        Mock<ILogger> Logger;
         IMapper Mapper;
 
         [TestInitialize]
@@ -35,8 +34,6 @@ namespace ConditionMonitoringAPI.Tests
             DateTimeDefualt = new DateTimeOffset(2020, 04, 04, 13, 12, 11, TimeSpan.Zero);
             DateTime = Utils.Utils.GetMockDateTime(DateTimeDefualt);
             Context = DbContextMocker.GetConditionMonitoringDbContextMock("ConditionMonitoring", DateTime.Object);
-
-            Logger = new Mock<ILogger>();
 
             var myProfile = new FeaturesProfile();
             var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
@@ -47,7 +44,9 @@ namespace ConditionMonitoringAPI.Tests
         public void GetExistingBoardByIdSucceeds()
         {
             //Arrange
-            var handler = new GetBoardByIdHandler(Context, Logger.Object, Mapper);
+            var logger = new Mock<ILogger<GetBoardByIdHandler>>();
+
+            var handler = new GetBoardByIdHandler(Context, logger.Object, Mapper);
             var query = new GetEntityById<Board, long>(1);
 
             //Act
@@ -61,7 +60,9 @@ namespace ConditionMonitoringAPI.Tests
         public void GetNonExistingBoardByIdFailsWithException()
         {
             //Arrange
-            var handler = new GetBoardByIdHandler(Context, Logger.Object, Mapper);
+            var logger = new Mock<ILogger<GetBoardByIdHandler>>();
+
+            var handler = new GetBoardByIdHandler(Context, logger.Object, Mapper);
             var query = new GetEntityById<Board, long>(0);
 
             //Act
@@ -87,7 +88,9 @@ namespace ConditionMonitoringAPI.Tests
             var validatorMock = new Mock<BoardValidator>();
             validatorMock.Setup(x => x.Validate(It.IsAny<Board>())).Returns(validatorResultMock.Object);
 
-            var handler = new CreateBoardHandler(Context, Logger.Object, validatorMock.Object, Mapper);
+            var logger = new Mock<ILogger<CreateBoardHandler>>();
+
+            var handler = new CreateBoardHandler(Context, logger.Object, validatorMock.Object, Mapper);
             var query = new CreateEntityFromDto<Board, long, BoardDto>(entity);
 
             //Act
@@ -111,7 +114,9 @@ namespace ConditionMonitoringAPI.Tests
             var validatorMock = new Mock<BoardValidator>();
             validatorMock.Setup(x => x.Validate(It.IsAny<Board>())).Returns(validatorResultMock.Object);
 
-            var handler = new CreateBoardHandler(Context, Logger.Object, validatorMock.Object, Mapper);
+            var logger = new Mock<ILogger<CreateBoardHandler>>();
+
+            var handler = new CreateBoardHandler(Context, logger.Object, validatorMock.Object, Mapper);
             var query = new CreateEntityFromDto<Board, long, BoardDto>(entity);
 
             //Act
@@ -129,8 +134,10 @@ namespace ConditionMonitoringAPI.Tests
 
             Context.Set<Board>().Add(entity);
             Context.SaveChanges();
-            
-            var handler = new DeleteBoardByIdHandler(Context, Logger.Object, Mapper);
+
+            var logger = new Mock<ILogger<DeleteBoardByIdHandler>>();
+
+            var handler = new DeleteBoardByIdHandler(Context, logger.Object, Mapper);
             var query = new DeleteEntity<Board, long>(42);
 
             //Act
@@ -144,7 +151,9 @@ namespace ConditionMonitoringAPI.Tests
         public void DeleteNonExistingBoardFailsWithException()
         {
             //Arrange
-            var handler = new DeleteBoardByIdHandler(Context, Logger.Object, Mapper);
+            var logger = new Mock<ILogger<DeleteBoardByIdHandler>>();
+
+            var handler = new DeleteBoardByIdHandler(Context, logger.Object, Mapper);
             var query = new DeleteEntity<Board, long>(42);
 
             //Act

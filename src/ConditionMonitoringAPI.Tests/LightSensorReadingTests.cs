@@ -25,7 +25,6 @@ namespace ConditionMonitoringAPI.Tests
         DateTimeOffset DateTimeDefualt;
         ConditionMonitoringDbContext Context;
         CancellationToken CancToken => new CancellationToken();
-        Mock<ILogger> Logger;
         IMapper Mapper;
 
         [TestInitialize]
@@ -34,8 +33,6 @@ namespace ConditionMonitoringAPI.Tests
             DateTimeDefualt = new DateTimeOffset(2020, 04, 04, 13, 12, 11, TimeSpan.Zero);
             DateTime = Utils.Utils.GetMockDateTime(DateTimeDefualt);
             Context = DbContextMocker.GetConditionMonitoringDbContextMock("ConditionMonitoring", DateTime.Object);
-
-            Logger = new Mock<ILogger>();
 
             var myProfile = new FeaturesProfile();
             var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
@@ -46,7 +43,10 @@ namespace ConditionMonitoringAPI.Tests
         public void GetExistingLightSensorReadingByIdSucceeds()
         {
             //Arrange
-            var handler = new GetLightSensorReadingByIdHandler(Context, Logger.Object, Mapper);
+
+            var logger = new Mock<ILogger<GetLightSensorReadingByIdHandler>>();
+
+            var handler = new GetLightSensorReadingByIdHandler(Context, logger.Object, Mapper);
             var query = new GetEntityById<LightSensorReading, long>(1);
 
             //Act
@@ -60,7 +60,9 @@ namespace ConditionMonitoringAPI.Tests
         public void GetNonExistingLightSensorReadingByIdFailsWithException()
         {
             //Arrange
-            var handler = new GetLightSensorReadingByIdHandler(Context, Logger.Object, Mapper);
+            var logger = new Mock<ILogger<GetLightSensorReadingByIdHandler>>();
+
+            var handler = new GetLightSensorReadingByIdHandler(Context, logger.Object, Mapper);
             var query = new GetEntityById<LightSensorReading, long>(0);
 
             //Act
@@ -85,8 +87,10 @@ namespace ConditionMonitoringAPI.Tests
 
             var validatorMock = new Mock<LightSensorReadingValidator>();
             validatorMock.Setup(x => x.Validate(It.IsAny<LightSensorReading>())).Returns(validatorResultMock.Object);
+            
+            var logger = new Mock<ILogger<CreateLightSensorReadingHandler>>();
 
-            var handler = new CreateLightSensorReadingHandler(Context, Logger.Object, validatorMock.Object, Mapper);
+            var handler = new CreateLightSensorReadingHandler(Context, logger.Object, validatorMock.Object, Mapper);
             var query = new CreateEntityFromDto<LightSensorReading, long, LightSensorReadingDto>(entity);
 
             //Act
@@ -109,8 +113,10 @@ namespace ConditionMonitoringAPI.Tests
 
             var validatorMock = new Mock<LightSensorReadingValidator>();
             validatorMock.Setup(x => x.Validate(It.IsAny<LightSensorReading>())).Returns(validatorResultMock.Object);
+            
+            var logger = new Mock<ILogger<CreateLightSensorReadingHandler>>();
 
-            var handler = new CreateLightSensorReadingHandler(Context, Logger.Object, validatorMock.Object, Mapper);
+            var handler = new CreateLightSensorReadingHandler(Context, logger.Object, validatorMock.Object, Mapper);
             var query = new CreateEntityFromDto<LightSensorReading, long, LightSensorReadingDto>(entity);
 
             //Act
@@ -128,8 +134,10 @@ namespace ConditionMonitoringAPI.Tests
 
             Context.Set<LightSensorReading>().Add(entity);
             Context.SaveChanges();
-            
-            var handler = new DeleteLightSensorReadingByIdHandler(Context, Logger.Object, Mapper);
+
+            var logger = new Mock<ILogger<DeleteLightSensorReadingByIdHandler>>();
+
+            var handler = new DeleteLightSensorReadingByIdHandler(Context, logger.Object, Mapper);
             var query = new DeleteEntity<LightSensorReading, long>(42);
 
             //Act
@@ -143,7 +151,9 @@ namespace ConditionMonitoringAPI.Tests
         public void DeleteNonExistingLightSensorReadingFailsWithException()
         {
             //Arrange
-            var handler = new DeleteLightSensorReadingByIdHandler(Context, Logger.Object, Mapper);
+            var logger = new Mock<ILogger<DeleteLightSensorReadingByIdHandler>>();
+
+            var handler = new DeleteLightSensorReadingByIdHandler(Context, logger.Object, Mapper);
             var query = new DeleteEntity<LightSensorReading, long>(42);
 
             //Act
