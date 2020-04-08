@@ -33,8 +33,8 @@ namespace ConditionMonitoringAPI.Abstract
             Repository = Context.Set<T>();
         }
 
-        [HttpGet("{Id}")]
-        public virtual async Task<IActionResult> Get([FromQuery] TId Id)
+        [HttpGet]
+        public virtual async Task<IActionResult> Get(TId Id)
         {
             T entity;
 
@@ -50,7 +50,7 @@ namespace ConditionMonitoringAPI.Abstract
         }
 
         [HttpPost]
-        public virtual async Task<IActionResult> Post([FromBody] T entity)
+        public virtual async Task<IActionResult> Post(T entity)
         {
             try
             {
@@ -63,9 +63,9 @@ namespace ConditionMonitoringAPI.Abstract
         }
 
         [HttpDelete]
-        public virtual IActionResult Delete([FromODataUri] long key)
+        public virtual IActionResult Delete([FromQuery] TId Id)
         {
-            var entity = Repository.Find(key); ;
+            var entity = Repository.Find(Id); ;
 
             if (entity is null)
                 return NotFound();
@@ -75,33 +75,33 @@ namespace ConditionMonitoringAPI.Abstract
             return Ok();
         }
 
-        [HttpPatch]
-        public async Task<IActionResult> Patch([FromODataUri] TId key, [FromBody] Delta<T> entityDelta)
-        {
-            var entity = Repository.Find(key);
+        //[HttpPatch]
+        //public async Task<IActionResult> Patch(TId Id, [FromBody] Delta<T> entityDelta)
+        //{
+        //    var entity = Repository.Find(Id);
 
-            if (entity is null)
-                return NotFound();
+        //    if (entity is null)
+        //        return NotFound();
 
-            entityDelta.Patch(entity);
+        //    entityDelta.Patch(entity);
 
-            try
-            {
-                await Context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EntityExists(key))
-                    return NotFound();
-                else
-                    throw;
-            }
+        //    try
+        //    {
+        //        await Context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!EntityExists(Id))
+        //            return NotFound();
+        //        else
+        //            throw;
+        //    }
 
-            return Ok(entity);
-        }
+        //    return Ok(entity);
+        //}
 
         [HttpPut]
-        public async Task<IActionResult> Put([FromODataUri]TId key, [FromBody] T update)
+        public async Task<IActionResult> Put([FromQuery]TId Id, [FromBody] T update)
         {
             try
             {
@@ -113,7 +113,7 @@ namespace ConditionMonitoringAPI.Abstract
                 return BadRequest(e.Message);
             }
 
-            if (!key.Equals(update.Id))
+            if (!Id.Equals(update.Id))
                 return BadRequest();
 
             Context.Entry(update).State = EntityState.Modified;
@@ -123,7 +123,7 @@ namespace ConditionMonitoringAPI.Abstract
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!EntityExists(key))
+                if (!EntityExists(Id))
                     return NotFound();
                 else
                     throw;
@@ -131,7 +131,7 @@ namespace ConditionMonitoringAPI.Abstract
             return Ok(update);
         }
 
-        bool EntityExists(TId key) => Repository.Any(x => x.Id.Equals(key));
+        bool EntityExists(TId Id) => Repository.Any(x => x.Id.Equals(Id));
         
         void ValidateEntity(T entity) 
         { 

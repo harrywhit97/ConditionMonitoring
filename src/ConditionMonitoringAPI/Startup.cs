@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Text.Json.Serialization;
 using AutoMapper;
 using ConditionMonitoringAPI.Features.Boards.Validators;
 using ConditionMonitoringAPI.Features.Readings;
@@ -6,7 +7,6 @@ using ConditionMonitoringAPI.Features.SensorsReadings.Validators;
 using ConditionMonitoringAPI.Services;
 using Domain.Interfaces;
 using Domain.Models;
-using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
@@ -42,7 +42,12 @@ namespace ConditionMonitoringAPI
 
             services.AddOData();
 
-            services.AddMvc().AddControllersAsServices();
+            services.AddMvc()
+                .AddControllersAsServices()
+                .AddJsonOptions(options => {
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                }); ;
 
             //Work around to enable swagger
             services.AddMvcCore(options =>
@@ -62,7 +67,6 @@ namespace ConditionMonitoringAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
-
 
             services.AddScoped<LightSensorReadingValidator>();
             services.AddScoped<BoardValidator>();
