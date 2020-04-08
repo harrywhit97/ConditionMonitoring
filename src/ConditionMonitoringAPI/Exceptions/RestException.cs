@@ -19,5 +19,11 @@ namespace ConditionMonitoringAPI.Exceptions
             StatusCode = code;
             Exception = new Exception(exceptionMessage);
         }
+
+        public RestException(HttpStatusCode code)
+        {
+            StatusCode = code;
+            Exception = new Exception();
+        }
     }
 }

@@ -4,7 +4,10 @@ using ConditionMonitoringAPI.Features.Crosscutting.Commands;
 using ConditionMonitoringAPI.Features.Crosscutting.Queries;
 using ConditionMonitoringAPI.Features.Readings;
 using ConditionMonitoringAPI.Features.Readings.Dtos;
+using ConditionMonitoringAPI.Features.Sensors;
+using ConditionMonitoringAPI.Features.Sensors.Dtos;
 using ConditionMonitoringAPI.Features.SensorsReadings.Validators;
+using Domain.Enums;
 using Domain.Interfaces;
 using Domain.Models;
 using FluentAssertions;
@@ -15,11 +18,12 @@ using Moq;
 using System;
 using System.Net;
 using System.Threading;
+using static ConditionMonitoringAPI.Features.Sensors.SensorHandlers;
 
 namespace ConditionMonitoringAPI.Tests
 {
     [TestClass]
-    public class LightSensorReadingTests
+    public class SensorTests
     {
         Mock<IDateTime> DateTime;
         DateTimeOffset DateTimeDefualt;
@@ -43,11 +47,11 @@ namespace ConditionMonitoringAPI.Tests
         }
 
         [TestMethod]
-        public void GetExistingLightSensorReadingByIdSucceeds()
+        public void GetExistingSensorByIdSucceeds()
         {
             //Arrange
-            var handler = new GetLightSensorReadingByIdHandler(Context, Logger.Object, Mapper);
-            var query = new GetEntityById<LightSensorReading, long>(1);
+            var handler = new GetSensorByIdHandler(Context, Logger.Object, Mapper);
+            var query = new GetEntityById<Sensor<ISensorReading>, long>(1);
 
             //Act
             var result = handler.Handle(query, CancToken).Result;
@@ -57,61 +61,64 @@ namespace ConditionMonitoringAPI.Tests
         }
 
         [TestMethod]
-        public void GetNonExistingLightSensorReadingByIdFailsWithException()
+        public void GetNonExistingSensorByIdFailsWithException()
         {
             //Arrange
-            var handler = new GetLightSensorReadingByIdHandler(Context, Logger.Object, Mapper);
-            var query = new GetEntityById<LightSensorReading, long>(0);
+            var handler = new GetSensorByIdHandler(Context, Logger.Object, Mapper);
+            var query = new GetEntityById<Sensor<ISensorReading>, long>(0);
 
             //Act
             Action act = () => handler.Handle(query, CancToken).Result.Should();
 
             //Assert
-            act.Should().Throw<Exception>().WithMessage("Could not find a LightSensorReading with an Id of 0");
+            act.Should().Throw<Exception>().WithMessage("Could not find a Sensor`1 with an Id of 0");
         }
 
         [TestMethod]
-        public void CreateLightSensorReadingSucceeds()
+        public void CreateSensorSucceeds()
         {
             //Arrange
-            var entity = new LightSensorReadingDto()
+            var entity = new SensorDto()
             {
-                RawReading = 255,
-                Brightness = 123
+                Name = "testName",
+                Address = 255,
+                SensorType = SensorType.Light,
+                Pin = 456
             };
 
             var validatorResultMock = new Mock<ValidationResult>();
             validatorResultMock.Setup(x => x.IsValid).Returns(true);
 
-            var validatorMock = new Mock<LightSensorReadingValidator>();
-            validatorMock.Setup(x => x.Validate(It.IsAny<LightSensorReading>())).Returns(validatorResultMock.Object);
+            var validatorMock = new Mock<SensorValidator>();
+            validatorMock.Setup(x => x.Validate(It.IsAny<Sensor<ISensorReading>>())).Returns(validatorResultMock.Object);
 
-            var handler = new CreateLightSensorReadingHandler(Context, Logger.Object, validatorMock.Object, Mapper);
-            var query = new CreateEntityFromDto<LightSensorReading, long, LightSensorReadingDto>(entity);
+            var handler = new CreateSensorHandler(Context, Logger.Object, validatorMock.Object, Mapper);
+            var query = new CreateEntityFromDto<Sensor<ISensorReading>, long, SensorDto>(entity);
 
             //Act
             var result = handler.Handle(query, CancToken).Result;
 
             //Assert
             result.Should().NotBeNull();
-            result.RawReading.Should().Be(entity.RawReading);
-            result.Brightness.Should().Be(entity.Brightness);
+            result.Name.Should().Be(entity.Name);
+            result.Pin.Should().Be(entity.Pin);
+            result.SensorType.Should().Be(entity.SensorType);
         }
 
         [TestMethod]
-        public void CreateLightSensorReadingWithValidationErrorThrowsException()
+        public void CreateSensorWithValidationErrorThrowsException()
         {
             //Arrange
-            var entity = new LightSensorReadingDto();
+            var entity = new SensorDto();
 
             var validatorResultMock = new Mock<ValidationResult>();
             validatorResultMock.Setup(x => x.IsValid).Returns(false);
 
-            var validatorMock = new Mock<LightSensorReadingValidator>();
-            validatorMock.Setup(x => x.Validate(It.IsAny<LightSensorReading>())).Returns(validatorResultMock.Object);
+            var validatorMock = new Mock<SensorValidator>();
+            validatorMock.Setup(x => x.Validate(It.IsAny<Sensor<ISensorReading>>())).Returns(validatorResultMock.Object);
 
-            var handler = new CreateLightSensorReadingHandler(Context, Logger.Object, validatorMock.Object, Mapper);
-            var query = new CreateEntityFromDto<LightSensorReading, long, LightSensorReadingDto>(entity);
+            var handler = new CreateSensorHandler(Context, Logger.Object, validatorMock.Object, Mapper);
+            var query = new CreateEntityFromDto<Sensor<ISensorReading>, long, SensorDto>(entity);
 
             //Act
             Action act = () => handler.Handle(query, CancToken).Result.Should();
@@ -121,16 +128,16 @@ namespace ConditionMonitoringAPI.Tests
         }
 
         [TestMethod]
-        public void DeleteExistingLightSensorReadingSucceeds()
+        public void DeleteExistingSensorSucceeds()
         {
             //Arrange
-            var entity = new LightSensorReading() { Id = 42};
+            var entity = new Sensor<ISensorReading>() { Id = 42};
 
-            Context.Set<LightSensorReading>().Add(entity);
+            Context.Set<Sensor<ISensorReading>>().Add(entity);
             Context.SaveChanges();
             
-            var handler = new DeleteLightSensorReadingByIdHandler(Context, Logger.Object, Mapper);
-            var query = new DeleteEntity<LightSensorReading, long>(42);
+            var handler = new DeleteSensorByIdHandler(Context, Logger.Object, Mapper);
+            var query = new DeleteEntity<Sensor<ISensorReading>, long>(42);
 
             //Act
             var result = handler.Handle(query, CancToken).Result;
@@ -140,11 +147,11 @@ namespace ConditionMonitoringAPI.Tests
         }
 
         [TestMethod]
-        public void DeleteNonExistingLightSensorReadingFailsWithException()
+        public void DeleteNonExistingSensorFailsWithException()
         {
             //Arrange
-            var handler = new DeleteLightSensorReadingByIdHandler(Context, Logger.Object, Mapper);
-            var query = new DeleteEntity<LightSensorReading, long>(42);
+            var handler = new DeleteSensorByIdHandler(Context, Logger.Object, Mapper);
+            var query = new DeleteEntity<Sensor<ISensorReading>, long>(42);
 
             //Act
             Action act = () => handler.Handle(query, CancToken).Result.Should();

@@ -1,7 +1,7 @@
 ﻿using Domain.Models;
 using System.Collections.Generic;
 
-namespace ConditionMonitoringAPI.Dtos
+namespace ConditionMonitoringAPI.Features.Readings.Dtos
 {
     public class RawSensorReadingBatchDto
     {

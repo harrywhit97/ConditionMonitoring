@@ -4,12 +4,16 @@ using System.Text.Json.Serialization;
 
 namespace Domain.Models
 {
-    public class Board : IHaveId<long>
+    public class Board : IHasId<long>
     {
         public long Id { get; set; }
         public string Name { get; set; }
         public string IpAddress { get; set; }
-        [JsonIgnore]
-        public ICollection<LightSensor> Sensors { get; set; }
+        public virtual ICollection<Sensor<ISensorReading>> Sensors { get; }
+
+        public Board()
+        {
+            Sensors = new List<Sensor<ISensorReading>>();
+        }
     }
 }

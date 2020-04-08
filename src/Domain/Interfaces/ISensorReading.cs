@@ -3,10 +3,10 @@ using System;
 
 namespace Domain.Interfaces
 {
-    public interface ISensorReading
+    public interface ISensorReading : IHasId<long>
     {
         public DateTimeOffset ReadingTime { get; set; }
-        public LightSensor Sensor { get; set; }
+        public Sensor<ISensorReading> Sensor { get; set; }
         public decimal RawReading { get; set; }
     }
 }

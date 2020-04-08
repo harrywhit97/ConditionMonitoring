@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using AutoMapper;
 using ConditionMonitoringAPI.Features.Boards.Validators;
 using ConditionMonitoringAPI.Features.Readings;
+using ConditionMonitoringAPI.Features.Sensors;
 using ConditionMonitoringAPI.Features.SensorsReadings.Validators;
 using ConditionMonitoringAPI.Services;
 using Domain.Interfaces;
@@ -61,8 +62,7 @@ namespace ConditionMonitoringAPI
                     inputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/prs.odatatestxx-odata"));
                 }
             });
-
-
+            
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
@@ -70,9 +70,10 @@ namespace ConditionMonitoringAPI
 
             services.AddScoped<LightSensorReadingValidator>();
             services.AddScoped<BoardValidator>();
+            services.AddScoped<SensorValidator>();
 
             services.AddTransient<IDateTime, DateTimeService>();
-            services.AddAutoMapper(typeof(ReadingsProfile));
+            services.AddAutoMapper(typeof(FeaturesProfile));
             services.AddMediatR(typeof(Startup));
         }
 
@@ -109,7 +110,7 @@ namespace ConditionMonitoringAPI
         {
             var odataBuilder = new ODataConventionModelBuilder();
             odataBuilder.EntitySet<LightSensorReading>(nameof(LightSensorReading));
-            odataBuilder.EntitySet<LightSensor>(nameof(LightSensor));
+            odataBuilder.EntitySet<Sensor<ISensorReading>>(nameof(Sensor<ISensorReading>));
             odataBuilder.EntitySet<Board>(nameof(Board));
             return odataBuilder.GetEdmModel();
         }

@@ -4,7 +4,7 @@ using MediatR;
 
 namespace ConditionMonitoringAPI.Features.Boards.Controllers
 {
-    public class BoardController : GenericController<Board, long>
+    public class BoardController : GenericController<Board, long, BoardDto>
     {
         public BoardController(ConditionMonitoringDbContext conditionMonitoringDbContext, IMediator mediator)
             :base(conditionMonitoringDbContext, mediator)

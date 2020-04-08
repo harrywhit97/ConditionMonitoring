@@ -1,6 +1,6 @@
 ﻿namespace Domain.Interfaces
 {
-    public interface IHaveId<TId>
+    public interface IHasId<TId>
     {
         public  TId Id { get; set; }
     }

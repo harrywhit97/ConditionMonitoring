@@ -1,4 +1,5 @@
-﻿using ConditionMonitoringAPI.Abstract;
+﻿using AutoMapper;
+using ConditionMonitoringAPI.Abstract;
 using Domain.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -21,8 +22,8 @@ namespace ConditionMonitoringAPI.Features.Boards.Queries
 
         public class GetBoardByIpHandler : AbstractRequestHandler<Board, long, GetBoardByIp>
         {
-            public GetBoardByIpHandler(ConditionMonitoringDbContext dbContext, ILogger<GetBoardByIpHandler> logger)
-                : base(dbContext, logger)
+            public GetBoardByIpHandler(ConditionMonitoringDbContext dbContext, ILogger<GetBoardByIpHandler> logger, IMapper mapper)
+                : base(dbContext, logger, mapper)
             {
             }
 

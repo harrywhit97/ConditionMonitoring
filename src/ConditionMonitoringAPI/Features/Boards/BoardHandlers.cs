@@ -1,4 +1,5 @@
-﻿using ConditionMonitoringAPI.Abstract;
+﻿using AutoMapper;
+using ConditionMonitoringAPI.Abstract;
 using ConditionMonitoringAPI.Features.Boards.Queries;
 using ConditionMonitoringAPI.Features.Boards.Validators;
 using ConditionMonitoringAPI.Features.Crosscutting.Commands;
@@ -15,43 +16,42 @@ namespace ConditionMonitoringAPI.Features.Boards
 {
     public class BoardHandlers
     {
-        public class GetBoardByIdHandler : GetByIdHandler<Board, long>
+        public class GetBoardByIdHandler : GetEntityByIdHandler<Board, long>
         {
-            public GetBoardByIdHandler(ConditionMonitoringDbContext context, ILogger<GetById<Board, long>> logger)
-                : base(context, logger)
+            public GetBoardByIdHandler(ConditionMonitoringDbContext context, ILogger logger, IMapper mapper)
+                :base(context, logger, mapper)
             {
             }
         }
 
-        public class CreateBoardHandler : CreateEntityHandler<Board, long, BoardValidator>
+        public class CreateBoardHandler : CreateEntityFromDtoHandler<Board, long, BoardValidator, BoardDto>
         {
-            public CreateBoardHandler(ConditionMonitoringDbContext context, ILogger<CreateBoardHandler> logger, BoardValidator validator)
-                : base(context, logger, validator)
+            public CreateBoardHandler(ConditionMonitoringDbContext context, ILogger logger, BoardValidator validator, IMapper mapper)
+                : base(context, logger, validator, mapper)
             {
             }
         }
 
-        public class DeleteBoardHandler : DeleteEntityHandler<Board, long>
+        public class UpdateBoardHandler : UpdateEntityFromDtoHandler<Board, long, BoardValidator, BoardDto>
         {
-            public DeleteBoardHandler(ConditionMonitoringDbContext context, ILogger<DeleteBoardHandler> logger)
-                : base(context, logger)
+            public UpdateBoardHandler(ConditionMonitoringDbContext context, ILogger logger, BoardValidator validator, IMapper mapper)
+                : base(context, logger, validator, mapper)
             {
             }
         }
 
-        public class UpdateBoardHandler : UpdateEntityHandler<Board, long, BoardValidator>
+        public class DeleteBoardByIdHandler : DeleteEntityHandler<Board, long>
         {
-            public UpdateBoardHandler(ConditionMonitoringDbContext context, ILogger<UpdateBoardHandler> logger, BoardValidator validator)
-                : base(context, logger, validator)
+            public DeleteBoardByIdHandler(ConditionMonitoringDbContext context, ILogger logger, IMapper mapper)
+                : base(context, logger, mapper)
             {
             }
         }
-
 
         public class GetBoardByIpHandler : AbstractRequestHandler<Board, long, GetBoardByIp>
         {
-            public GetBoardByIpHandler(ConditionMonitoringDbContext dbContext, ILogger<GetBoardByIpHandler> logger)
-                : base(dbContext, logger)
+            public GetBoardByIpHandler(ConditionMonitoringDbContext dbContext, ILogger logger, IMapper mapper)
+                : base(dbContext, logger, mapper)
             {
             }
 

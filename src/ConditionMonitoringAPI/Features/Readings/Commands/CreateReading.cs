@@ -1,4 +1,4 @@
-﻿using ConditionMonitoringAPI.Dtos;
+﻿using ConditionMonitoringAPI.Features.Readings.Dtos;
 using Domain.Interfaces;
 using Domain.Models;
 using MediatR;

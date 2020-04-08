@@ -14,7 +14,7 @@ namespace ConditionMonitoringAPI
     {
         
         public DbSet<LightSensorReading> LightSensorReadings { get; set; }
-        public DbSet<LightSensor> Sensors { get; set; }
+        public DbSet<Sensor<ISensorReading>> Sensors { get; set; }
         public DbSet<Board> Boards { get; set; }
         readonly IDateTime DateTime;
 
@@ -37,9 +37,9 @@ namespace ConditionMonitoringAPI
                 .HasIndex(b => b.IpAddress)
                 .IsUnique();
 
-            modelbuilder.Entity<LightSensor>()
-                .HasMany(s => s.Readings)
-                .WithOne(r => r.Sensor)
+            modelbuilder.Entity<LightSensorReading>()
+                .HasOne(r => r.Sensor)
+                .WithMany(s => s.Readings as ICollection<LightSensorReading>)
                 .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelbuilder);

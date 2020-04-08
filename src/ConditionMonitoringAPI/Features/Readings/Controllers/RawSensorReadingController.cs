@@ -1,6 +1,6 @@
-﻿using ConditionMonitoringAPI.Dtos;
-using ConditionMonitoringAPI.Features.Boards.Queries;
+﻿using ConditionMonitoringAPI.Features.Boards.Queries;
 using ConditionMonitoringAPI.Features.Readings.Commands;
+using ConditionMonitoringAPI.Features.Readings.Dtos;
 using Domain.Interfaces;
 using Domain.Models;
 using MediatR;

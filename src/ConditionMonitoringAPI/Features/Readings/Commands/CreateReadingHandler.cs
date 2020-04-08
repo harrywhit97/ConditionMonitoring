@@ -27,17 +27,17 @@ namespace ConditionMonitoringAPI.Features.Readings.Commands
         {
             Logger.LogInformation($"{nameof(CreateReadingHandler)} recieved a request");
 
-            var rawReading = Mapper.Map<RawSensorReading>(request.RawSensorReadingDto);
-
             var pin = request.RawSensorReadingDto.Pin;
 
             var sensor = request.Board.Sensors.Where(x => x.Pin == pin).FirstOrDefault();
 
             _ = sensor ?? throw new Exception($"A sensor that has a pin of {pin} was not found.");
 
-            rawReading.Sensor = sensor;
+            var reading = Mapper.Map<ISensorReading>(request.RawSensorReadingDto);
 
-            var reading = SensorReadingFactory.GetSensorReading(rawReading);
+            reading.Sensor = sensor;
+
+            reading.Calculate();
 
             return (Task<ISensorReading>)reading;
         }
