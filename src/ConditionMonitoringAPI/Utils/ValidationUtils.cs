@@ -1,6 +1,6 @@
 ﻿using ConditionMonitoringAPI.Abstract;
+using FluentValidation;
 using FluentValidation.Results;
-using System;
 using System.Linq;
 using System.Text;
 
@@ -13,7 +13,7 @@ namespace ConditionMonitoringAPI.Utils
             var result = validator.Validate(entity);
             
             if (!result.IsValid)
-                throw new ArgumentException(GetValidationErrorString(result));
+                throw new ValidationException(GetValidationErrorString(result));
         }
 
         public static string GetValidationErrorString(ValidationResult result)

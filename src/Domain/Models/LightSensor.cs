@@ -1,6 +1,7 @@
 ﻿using Domain.Enums;
 using Domain.Interfaces;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Domain.Models
 {
@@ -12,6 +13,7 @@ namespace Domain.Models
         public Board Board { get; set; }
         public long Pin { get; set; }
         public SensorType SensorType { get; set; }
+        [JsonIgnore]
         public ICollection<LightSensorReading> Readings { get; set; }
     }
 }

@@ -1,14 +1,13 @@
 ﻿using ConditionMonitoringAPI.Abstract;
-using ConditionMonitoringAPI.Features.Boards.Validators;
 using Domain.Models;
 using MediatR;
 
 namespace ConditionMonitoringAPI.Features.Boards.Controllers
 {
-    public class BoardController : GenericController<Board, long, BoardValidator>
+    public class BoardController : GenericController<Board, long>
     {
-        public BoardController(ConditionMonitoringDbContext conditionMonitoringDbContext, BoardValidator validator, IMediator mediator)
-            :base(conditionMonitoringDbContext, validator, mediator)
+        public BoardController(ConditionMonitoringDbContext conditionMonitoringDbContext, IMediator mediator)
+            :base(conditionMonitoringDbContext, mediator)
         {
         }
     }

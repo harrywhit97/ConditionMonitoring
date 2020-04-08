@@ -1,39 +1,40 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using Microsoft.AspNet.OData;
 using System;
-using System.Text;
 using Domain.Interfaces;
 using System.Threading.Tasks;
-using ConditionMonitoringAPI.Utils;
-using FluentValidation.Results;
 using MediatR;
 using ConditionMonitoringAPI.Features.Crosscutting.Commands;
 using System.Threading;
 using ConditionMonitoringAPI.Features.Crosscutting.Queries;
+using ConditionMonitoringAPI.Exceptions;
+using System.Net;
+using Microsoft.AspNet.OData;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ConditionMonitoringAPI.Abstract
 {
     [Route("api/[controller]")]
-    public abstract class GenericController<T, TId, TValidator> : ControllerBase
-        where T : class, IHaveId<TId> 
-        where TValidator : AbstractValidatorWrapper<T>
+    public abstract class GenericController<T, TId> : ControllerBase
+        where T : class, IHaveId<TId>
     {
-        readonly TValidator Validator;
         readonly DbContext Context;
         readonly DbSet<T> Repository;
         readonly IMediator Mediator;
 
-        public GenericController(DbContext context, TValidator validator, IMediator mediator)
+        public GenericController(DbContext context, IMediator mediator)
         {
             Context = context;
-            Validator = validator;
             Mediator = mediator;
             Repository = Context.Set<T>();
         }
 
         [HttpGet]
+        [EnableQuery]
+        public virtual IQueryable<T> Get() => Context.Set<T>().AsQueryable();
+
+        [HttpGet("{Id}")]
         public virtual async Task<IActionResult> Get(TId Id)
         {
             T entity;
@@ -63,89 +64,43 @@ namespace ConditionMonitoringAPI.Abstract
         }
 
         [HttpDelete]
-        public virtual IActionResult Delete([FromQuery] TId Id)
-        {
-            var entity = Repository.Find(Id); ;
-
-            if (entity is null)
-                return NotFound();
-
-            Repository.Remove(entity);
-            Context.SaveChanges();
-            return Ok();
-        }
-
-        //[HttpPatch]
-        //public async Task<IActionResult> Patch(TId Id, [FromBody] Delta<T> entityDelta)
-        //{
-        //    var entity = Repository.Find(Id);
-
-        //    if (entity is null)
-        //        return NotFound();
-
-        //    entityDelta.Patch(entity);
-
-        //    try
-        //    {
-        //        await Context.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        if (!EntityExists(Id))
-        //            return NotFound();
-        //        else
-        //            throw;
-        //    }
-
-        //    return Ok(entity);
-        //}
-
-        [HttpPut]
-        public async Task<IActionResult> Put([FromQuery]TId Id, [FromBody] T update)
+        public virtual async Task<IActionResult> Delete(TId Id)
         {
             try
             {
-                update = SanatizeData.SanitizeStrings(update);
-                ValidateEntity(update);
+                return Ok(await Mediator.Send(new DeleteEntity<T, TId>(Id), new CancellationToken()));
             }
             catch (Exception e)
             {
                 return BadRequest(e.Message);
             }
+        }
 
-            if (!Id.Equals(update.Id))
+        [HttpPut]
+        public async Task<IActionResult> Put(TId Id, T update)
+        {
+            if (update is null)
                 return BadRequest();
 
-            Context.Entry(update).State = EntityState.Modified;
             try
             {
-                await Context.SaveChangesAsync();
+                return Ok(await Mediator.Send(new UpdateEntity<T, TId>(Id, update), new CancellationToken()));
             }
-            catch (DbUpdateConcurrencyException)
+            catch(RestException e)
             {
-                if (!EntityExists(Id))
-                    return NotFound();
-                else
-                    throw;
+                var inner = e.Exception;
+                switch (e.StatusCode)
+                {                    
+                    case HttpStatusCode.NotFound:
+                        return NotFound(inner.Message);
+                    default:
+                        return BadRequest(inner.Message);
+                }
             }
-            return Ok(update);
-        }
-
-        bool EntityExists(TId Id) => Repository.Any(x => x.Id.Equals(Id));
-        
-        void ValidateEntity(T entity) 
-        { 
-            var result = Validator.Validate(entity);
-            
-            if (!result.IsValid)
-                throw new ArgumentException(GetValidationErrorString(result));
-        }
-
-        string GetValidationErrorString(ValidationResult result)
-        {
-            var errors = new StringBuilder();
-            result.Errors.Select(x => errors.Append($"{x.ErrorMessage};"));
-            return errors.ToString();
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }
