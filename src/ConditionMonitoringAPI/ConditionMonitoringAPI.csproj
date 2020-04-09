@@ -4,7 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>05b3885a-ca77-437e-a967-7c6580b25f6a</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
-    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Company />
     <Authors>Harry Whittaker</Authors>
     <PackageId>Condition.Monitoring.API</PackageId>
