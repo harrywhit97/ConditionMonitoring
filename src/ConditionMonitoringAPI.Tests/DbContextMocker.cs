@@ -1,20 +1,19 @@
 ﻿using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace ConditionMonitoringAPI.Tests
 {
     public static class DbContextMocker
     {
-        public static ConditionMonitoringDbContext GetConditionMonitoringDbContextMock(string dbname, IDateTime dateTime)
+        public static ConditionMonitoringDbContext GetConditionMonitoringDbContext(IDateTime dateTime)
         {
             var options = new DbContextOptionsBuilder<ConditionMonitoringDbContext>()
-                .UseInMemoryDatabase(databaseName: dbname)
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
                 .Options;
 
             var dbContext = new ConditionMonitoringDbContext(options, dateTime);
-
-            dbContext.Seed();
-
+            dbContext.Database.EnsureCreated();
             return dbContext;
         }
     }

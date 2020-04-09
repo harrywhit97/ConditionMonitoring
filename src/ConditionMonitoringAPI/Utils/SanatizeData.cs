@@ -18,7 +18,11 @@ namespace ConditionMonitoringAPI.Utils
 
                 if (p.PropertyType == typeof(string))
                 {
-                    var value = p.GetValue(entity).ToString().Trim();
+                    var value = p.GetValue(entity)?.ToString()?.Trim();
+
+                    if (value is null)
+                        continue;
+
                     if (Regex.IsMatch(value, @"^[a-zA-Z0-9]+$"))
                         p.SetValue(entity, value);
                     else

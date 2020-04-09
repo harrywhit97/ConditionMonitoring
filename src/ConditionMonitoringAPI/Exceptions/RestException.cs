@@ -6,24 +6,21 @@ namespace ConditionMonitoringAPI.Exceptions
     public class RestException : Exception
     {
         public HttpStatusCode StatusCode { get; set; }
-        public Exception Exception { get; set; }
 
-        public RestException(HttpStatusCode code, Exception exception)
+
+        public RestException()
         {
-            StatusCode = code;
-            Exception = exception;
         }
 
-        public RestException(HttpStatusCode code, string exceptionMessage)
+        public RestException(string message, Exception inner)
+            :base(message, inner)
         {
-            StatusCode = code;
-            Exception = new Exception(exceptionMessage);
         }
 
-        public RestException(HttpStatusCode code)
+        public RestException(HttpStatusCode code, string message)
+            :base(message)
         {
             StatusCode = code;
-            Exception = new Exception();
         }
     }
 }

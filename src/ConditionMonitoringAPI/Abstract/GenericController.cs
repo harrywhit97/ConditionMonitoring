@@ -85,13 +85,12 @@ namespace ConditionMonitoringAPI.Abstract
             }
             catch (RestException e)
             {
-                var inner = e.Exception;
                 switch (e.StatusCode)
                 {
                     case HttpStatusCode.NotFound:
-                        return NotFound(inner.Message);
+                        return NotFound(e.Message);
                     default:
-                        return BadRequest(inner.Message);
+                        return BadRequest(e.Message);
                 }
             }
             catch (Exception e)
@@ -115,13 +114,12 @@ namespace ConditionMonitoringAPI.Abstract
             }
             catch(RestException e)
             {
-                var inner = e.Exception;
                 switch (e.StatusCode)
                 {                    
                     case HttpStatusCode.NotFound:
-                        return NotFound(inner.Message);
+                        return NotFound(e.Message);
                     default:
-                        return BadRequest(inner.Message);
+                        return BadRequest(e.Message);
                 }
             }
             catch (Exception e)

@@ -1,4 +1,3 @@
-using AutoMapper;
 using ConditionMonitoringAPI.Exceptions;
 using ConditionMonitoringAPI.Features.Crosscutting.Commands;
 using ConditionMonitoringAPI.Features.Crosscutting.Queries;
@@ -8,46 +7,28 @@ using ConditionMonitoringAPI.Features.SensorsReadings.Validators;
 using Domain.Interfaces;
 using Domain.Models;
 using FluentAssertions;
-using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Net;
-using System.Threading;
 
 namespace ConditionMonitoringAPI.Tests
 {
     [TestClass]
-    public class LightSensorReadingTests
+    public class LightSensorReadingTests : AbstractTestClass
     {
-        Mock<IDateTime> DateTime;
-        DateTimeOffset DateTimeDefualt;
-        ConditionMonitoringDbContext Context;
-        CancellationToken CancToken => new CancellationToken();
-        IMapper Mapper;
-
-        [TestInitialize]
-        public void Initialize()
-        {
-            DateTimeDefualt = new DateTimeOffset(2020, 04, 04, 13, 12, 11, TimeSpan.Zero);
-            DateTime = Utils.Utils.GetMockDateTime(DateTimeDefualt);
-            Context = DbContextMocker.GetConditionMonitoringDbContextMock("ConditionMonitoring", DateTime.Object);
-
-            var myProfile = new FeaturesProfile();
-            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
-            Mapper = new Mapper(configuration);
-        }
 
         [TestMethod]
         public void GetExistingLightSensorReadingByIdSucceeds()
         {
             //Arrange
-
             var logger = new Mock<ILogger<GetLightSensorReadingByIdHandler>>();
 
             var handler = new GetLightSensorReadingByIdHandler(Context, logger.Object, Mapper);
             var query = new GetEntityById<LightSensorReading, long>(1);
+
+            Seed(Context);
 
             //Act
             var result = handler.Handle(query, CancToken).Result;
@@ -69,7 +50,10 @@ namespace ConditionMonitoringAPI.Tests
             Action act = () => handler.Handle(query, CancToken).Result.Should();
 
             //Assert
-            act.Should().Throw<Exception>().WithMessage("Could not find a LightSensorReading with an Id of 0");
+            act.Should().Throw<RestException>()
+                .WithMessage("Could not find a LightSensorReading with an Id of 0")
+                .And
+                .StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         [TestMethod]
@@ -82,12 +66,7 @@ namespace ConditionMonitoringAPI.Tests
                 Brightness = 123
             };
 
-            var validatorResultMock = new Mock<ValidationResult>();
-            validatorResultMock.Setup(x => x.IsValid).Returns(true);
-
-            var validatorMock = new Mock<LightSensorReadingValidator>();
-            validatorMock.Setup(x => x.Validate(It.IsAny<LightSensorReading>())).Returns(validatorResultMock.Object);
-            
+            var validatorMock = GetValidatorMock<LightSensorReadingValidator, LightSensorReading>();
             var logger = new Mock<ILogger<CreateLightSensorReadingHandler>>();
 
             var handler = new CreateLightSensorReadingHandler(Context, logger.Object, validatorMock.Object, Mapper);
@@ -108,12 +87,7 @@ namespace ConditionMonitoringAPI.Tests
             //Arrange
             var entity = new LightSensorReadingDto();
 
-            var validatorResultMock = new Mock<ValidationResult>();
-            validatorResultMock.Setup(x => x.IsValid).Returns(false);
-
-            var validatorMock = new Mock<LightSensorReadingValidator>();
-            validatorMock.Setup(x => x.Validate(It.IsAny<LightSensorReading>())).Returns(validatorResultMock.Object);
-            
+            var validatorMock = GetValidatorMock<LightSensorReadingValidator, LightSensorReading>(false);
             var logger = new Mock<ILogger<CreateLightSensorReadingHandler>>();
 
             var handler = new CreateLightSensorReadingHandler(Context, logger.Object, validatorMock.Object, Mapper);
@@ -123,7 +97,10 @@ namespace ConditionMonitoringAPI.Tests
             Action act = () => handler.Handle(query, CancToken).Result.Should();
 
             //Assert
-            act.Should().Throw<Exception>();
+            act.Should().Throw<RestException>()
+                .WithMessage("Exception of type 'FluentValidation.ValidationException' was thrown.")
+                .And
+                .StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
         [TestMethod]
@@ -160,8 +137,78 @@ namespace ConditionMonitoringAPI.Tests
             Action act = () => handler.Handle(query, CancToken).Result.Should();
 
             //Assert
-            act.Should().Throw<RestException>().Which
+            act.Should().Throw<RestException>()
+                .WithMessage("Could not find a LightSensorReading with an Id of '42'")
+                .And
                 .StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [TestMethod]
+        public void UpdateExistingLightSensorReadingSucceeds()
+        {
+            //Arrange
+            var dto = new LightSensorReadingDto() { Brightness = 999, SensorId = 2 };
+
+            var logger = new Mock<ILogger<UpdateLightSensorReadingHandler>>();
+            var validatorMock = GetValidatorMock<LightSensorReadingValidator, LightSensorReading>();
+
+            var handler = new UpdateLightSensorReadingHandler(Context, logger.Object, validatorMock.Object, Mapper);
+            var query = new UpdateEntityFromDto<LightSensorReading, long, LightSensorReadingDto>(1, dto);
+
+            Seed(Context);
+
+            //Act
+            var result = handler.Handle(query, CancToken).Result;
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Brightness.Should().Be(dto.Brightness);
+        }
+
+        [TestMethod]
+        public void UpdateExistingLightSensorReadingWithBadSensorIdReadingFaildWithException()
+        {
+            //Arrange
+            var dto = new LightSensorReadingDto() { Brightness = 999, SensorId = 3 };
+
+            var logger = new Mock<ILogger<UpdateLightSensorReadingHandler>>();
+            var validatorMock = GetValidatorMock<LightSensorReadingValidator, LightSensorReading>();
+
+            var handler = new UpdateLightSensorReadingHandler(Context, logger.Object, validatorMock.Object, Mapper);
+            var query = new UpdateEntityFromDto<LightSensorReading, long, LightSensorReadingDto>(1, dto);
+
+            Seed(Context);
+
+            //Act
+            Action act = () => handler.Handle(query, CancToken).Result.Should();
+
+            //Assert
+            act.Should().Throw<RestException>()
+                .WithMessage("Could not find a sensor with an Id of 3")
+                .And.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        public override void Seed(ConditionMonitoringDbContext dbContext)
+        {
+            var sensor = new Sensor<ISensorReading>()
+            {
+                Id = 2
+            };
+
+            dbContext.Add(sensor);
+
+            var readings = new[]
+            {
+                new LightSensorReading()
+                {
+                    Id = 1,
+                    RawReading = 255,
+                    Brightness = 123,
+                    Sensor = sensor
+                }
+            };
+            dbContext.AddRange(readings);
+            dbContext.SaveChanges();
         }
     }
 }

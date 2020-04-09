@@ -20,26 +20,8 @@ using static ConditionMonitoringAPI.Features.Boards.BoardHandlers;
 namespace ConditionMonitoringAPI.Tests
 {
     [TestClass]
-    public class BoardTestsTests
+    public class BoardTests : AbstractTestClass
     {
-        Mock<IDateTime> DateTime;
-        DateTimeOffset DateTimeDefualt;
-        ConditionMonitoringDbContext Context;
-        CancellationToken CancToken => new CancellationToken();
-        IMapper Mapper;
-
-        [TestInitialize]
-        public void Initialize()
-        {
-            DateTimeDefualt = new DateTimeOffset(2020, 04, 04, 13, 12, 11, TimeSpan.Zero);
-            DateTime = Utils.Utils.GetMockDateTime(DateTimeDefualt);
-            Context = DbContextMocker.GetConditionMonitoringDbContextMock("ConditionMonitoring", DateTime.Object);
-
-            var myProfile = new FeaturesProfile();
-            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
-            Mapper = new Mapper(configuration);
-        }
-
         [TestMethod]
         public void GetExistingBoardByIdSucceeds()
         {
@@ -48,6 +30,8 @@ namespace ConditionMonitoringAPI.Tests
 
             var handler = new GetBoardByIdHandler(Context, logger.Object, Mapper);
             var query = new GetEntityById<Board, long>(1);
+
+            Seed(Context);
 
             //Act
             var result = handler.Handle(query, CancToken).Result;
@@ -69,7 +53,10 @@ namespace ConditionMonitoringAPI.Tests
             Action act = () => handler.Handle(query, CancToken).Result.Should();
 
             //Assert
-            act.Should().Throw<Exception>().WithMessage("Could not find a Board with an Id of 0");
+            act.Should().Throw<RestException>()
+                .WithMessage("Could not find a Board with an Id of 0")
+                .And
+                .StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         [TestMethod]
@@ -82,11 +69,7 @@ namespace ConditionMonitoringAPI.Tests
                 IpAddress = "testIp"
             };
 
-            var validatorResultMock = new Mock<ValidationResult>();
-            validatorResultMock.Setup(x => x.IsValid).Returns(true);
-
-            var validatorMock = new Mock<BoardValidator>();
-            validatorMock.Setup(x => x.Validate(It.IsAny<Board>())).Returns(validatorResultMock.Object);
+            var validatorMock = GetValidatorMock<BoardValidator, Board>();
 
             var logger = new Mock<ILogger<CreateBoardHandler>>();
 
@@ -108,12 +91,7 @@ namespace ConditionMonitoringAPI.Tests
             //Arrange
             var entity = new BoardDto();
 
-            var validatorResultMock = new Mock<ValidationResult>();
-            validatorResultMock.Setup(x => x.IsValid).Returns(false);
-
-            var validatorMock = new Mock<BoardValidator>();
-            validatorMock.Setup(x => x.Validate(It.IsAny<Board>())).Returns(validatorResultMock.Object);
-
+            var validatorMock = GetValidatorMock<BoardValidator, Board>(false);
             var logger = new Mock<ILogger<CreateBoardHandler>>();
 
             var handler = new CreateBoardHandler(Context, logger.Object, validatorMock.Object, Mapper);
@@ -123,7 +101,10 @@ namespace ConditionMonitoringAPI.Tests
             Action act = () => handler.Handle(query, CancToken).Result.Should();
 
             //Assert
-            act.Should().Throw<Exception>();
+            act.Should().Throw<RestException>()
+                .WithMessage("Exception of type 'FluentValidation.ValidationException' was thrown.")
+                .And
+                .StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
         [TestMethod]
@@ -162,6 +143,44 @@ namespace ConditionMonitoringAPI.Tests
             //Assert
             act.Should().Throw<RestException>().Which
                 .StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [TestMethod]
+        public void UpdateExistingBoardSucceeds()
+        {
+            //Arrange
+            var dto = new BoardDto() { Name = "updatedName", IpAddress = "updatedIp" };
+
+            var logger = new Mock<ILogger<UpdateBoardHandler>>();
+            var validatorMock = GetValidatorMock<BoardValidator, Board>();
+
+            var handler = new UpdateBoardHandler(Context, logger.Object, validatorMock.Object, Mapper);
+            var query = new UpdateEntityFromDto<Board, long, BoardDto>(1, dto);
+
+            Seed(Context);
+
+            //Act
+            var result = handler.Handle(query, CancToken).Result;
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Name.Should().Be(dto.Name);
+            result.IpAddress.Should().Be(dto.IpAddress);
+        }
+
+        public override void Seed(ConditionMonitoringDbContext dbContext)
+        {
+            var boards = new[]
+            {
+                new Board()
+                {
+                    Id = 1,
+                    Name = "AName",
+                    IpAddress = "ip"
+                }
+            };
+            dbContext.AddRange(boards);
+            dbContext.SaveChanges();
         }
     }
 }

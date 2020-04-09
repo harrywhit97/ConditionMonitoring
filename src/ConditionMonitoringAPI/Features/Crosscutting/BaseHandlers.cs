@@ -5,6 +5,7 @@ using ConditionMonitoringAPI.Features.Crosscutting.Commands;
 using ConditionMonitoringAPI.Features.Crosscutting.Queries;
 using ConditionMonitoringAPI.Utils;
 using Domain.Interfaces;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -21,7 +22,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting
     {
         public class GetEntityByIdHandler : AbstractRequestHandler<T, TId, GetEntityById<T, TId>>
         {
-            public GetEntityByIdHandler(DbContext dbContext, ILogger logger, IMapper mapper)
+            public GetEntityByIdHandler(ConditionMonitoringDbContext dbContext, ILogger logger, IMapper mapper)
                 : base(dbContext, logger, mapper)
             {
             }
@@ -38,7 +39,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting
         {
             readonly TValidator Validator;
 
-            public CreateEntityFromDtoHandler(DbContext dbContext, ILogger logger, TValidator validator, IMapper mapper)
+            public CreateEntityFromDtoHandler(ConditionMonitoringDbContext dbContext, ILogger logger, TValidator validator, IMapper mapper)
                 : base(dbContext, logger, mapper)
             {
                 Validator = validator;
@@ -46,7 +47,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting
 
             public override async Task<T> Handle(CreateEntityFromDto<T, TId, TDto> request, CancellationToken cancellationToken)
             {
-                var Dto = request.Dto ?? throw new RestException(HttpStatusCode.BadRequest);
+                var Dto = request.Dto ?? throw new RestException(HttpStatusCode.BadRequest, "Null Dto");
                 T entity;
                 try
                 {
@@ -58,7 +59,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting
                 }
                 catch (Exception e)
                 {
-                    throw new RestException(HttpStatusCode.BadRequest, e);
+                    throw new RestException(HttpStatusCode.BadRequest, e.Message);
                 }
 
                 Context.Set<T>().Add(entity);
@@ -72,7 +73,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting
         {
             readonly TValidator Validator;
 
-            public UpdateEntityFromDtoHandler(DbContext dbContext, ILogger logger, TValidator validator, IMapper mapper)
+            public UpdateEntityFromDtoHandler(ConditionMonitoringDbContext dbContext, ILogger logger, TValidator validator, IMapper mapper)
                 : base(dbContext, logger, mapper)
             {
                 Validator = validator;
@@ -102,7 +103,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting
                 }
                 catch (Exception e)
                 {
-                    throw new RestException(HttpStatusCode.BadRequest, e);
+                    throw new RestException(HttpStatusCode.BadRequest, e.Message);
                 }
                 return entity;
             }
@@ -110,7 +111,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting
 
         public abstract class DeleteEntityHandler : AbstractRequestHandler<T, TId, DeleteEntity<T, TId>, bool>
         {
-            public DeleteEntityHandler(DbContext dbContext, ILogger logger, IMapper mapper)
+            public DeleteEntityHandler(ConditionMonitoringDbContext dbContext, ILogger logger, IMapper mapper)
                 : base(dbContext, logger, mapper)
             {
             }

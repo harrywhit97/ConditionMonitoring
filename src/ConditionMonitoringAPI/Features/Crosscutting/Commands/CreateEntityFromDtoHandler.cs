@@ -3,6 +3,7 @@ using ConditionMonitoringAPI.Abstract;
 using ConditionMonitoringAPI.Exceptions;
 using ConditionMonitoringAPI.Utils;
 using Domain.Interfaces;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -19,7 +20,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
     {
         readonly TValidator Validator;
 
-        public CreateEntityFromDtoHandler(DbContext dbContext, ILogger logger, TValidator validator, IMapper mapper)
+        public CreateEntityFromDtoHandler(ConditionMonitoringDbContext dbContext, ILogger logger, TValidator validator, IMapper mapper)
             : base(dbContext, logger, mapper)
         {
             Validator = validator;
@@ -27,7 +28,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
 
         public override async Task<T> Handle(CreateEntityFromDto<T, TId, TDto> request, CancellationToken cancellationToken)
         {
-            var Dto = request.Dto ?? throw new RestException(HttpStatusCode.BadRequest);
+            var Dto = request.Dto ?? throw new RestException(HttpStatusCode.BadRequest, "Null Dto");
             T entity;
             try
             {
@@ -37,9 +38,13 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
 
                 ValidationUtils.ValidateEntity(Validator, entity);
             }
+            catch (ValidationException e)
+            {
+                throw new RestException(HttpStatusCode.BadRequest, e.Message);
+            }
             catch(Exception e)
             {
-                throw new RestException(HttpStatusCode.BadRequest, e);                
+                throw new RestException(HttpStatusCode.BadRequest, e.Message);
             }            
 
             Context.Set<T>().Add(entity);

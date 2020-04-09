@@ -14,11 +14,11 @@ namespace ConditionMonitoringAPI.Abstract
         where TRequest : IRequest<TResult>
         {
 
-        readonly protected DbContext Context;
+        readonly protected ConditionMonitoringDbContext Context;
         readonly protected ILogger Logger;
         readonly protected IMapper Mapper;
 
-        public AbstractRequestHandler(DbContext dbContext, ILogger logger, IMapper mapper)
+        public AbstractRequestHandler(ConditionMonitoringDbContext dbContext, ILogger logger, IMapper mapper)
         {
             Context = dbContext;
             Logger = logger;
@@ -35,7 +35,7 @@ namespace ConditionMonitoringAPI.Abstract
         where T : class, IHasId<TId>
         where TRequest : IRequest<T>
     {
-        public AbstractRequestHandler(DbContext dbContext, ILogger logger, IMapper mapper)
+        public AbstractRequestHandler(ConditionMonitoringDbContext dbContext, ILogger logger, IMapper mapper)
             :base(dbContext, logger, mapper)
         {
         }

@@ -1,4 +1,6 @@
 ﻿using Domain.Enums;
+using Domain.Models;
+using System.Text.Json.Serialization;
 
 namespace ConditionMonitoringAPI.Features.Sensors.Dtos
 {
@@ -9,5 +11,7 @@ namespace ConditionMonitoringAPI.Features.Sensors.Dtos
         public long BoardId { get; set; }
         public long Pin { get; set; }
         public SensorType SensorType { get; set; }
+        [JsonIgnore]
+        public Board Board { get; set; }
     }
 }

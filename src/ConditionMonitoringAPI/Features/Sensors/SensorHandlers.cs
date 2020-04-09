@@ -6,6 +6,10 @@ using ConditionMonitoringAPI.Features.Crosscutting.Queries;
 using Microsoft.Extensions.Logging;
 using ConditionMonitoringAPI.Features.Crosscutting.Commands;
 using AutoMapper;
+using System.Threading.Tasks;
+using System.Threading;
+using ConditionMonitoringAPI.Exceptions;
+using System.Net;
 
 namespace ConditionMonitoringAPI.Features.Sensors
 {
@@ -32,6 +36,15 @@ namespace ConditionMonitoringAPI.Features.Sensors
             public UpdateSensorHandler(ConditionMonitoringDbContext context, ILogger<UpdateSensorHandler> logger, SensorValidator validator, IMapper mapper)
                 : base(context, logger, validator, mapper)
             {
+            }
+
+            public override Task<Sensor<ISensorReading>> Handle(UpdateEntityFromDto<Sensor<ISensorReading>, long, SensorDto> request, CancellationToken cancellationToken)
+            {
+                request.Dto.Board = Context.Boards.Find(request.Dto.BoardId);
+
+                _ = request.Dto.Board ?? throw new RestException(HttpStatusCode.BadRequest, $"Could not find a board with an Id of {request.Dto.BoardId}");
+
+                return base.Handle(request, cancellationToken);
             }
         }
 

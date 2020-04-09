@@ -19,7 +19,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
     {
         readonly TValidator Validator;
 
-        public UpdateEntityFromDtoHandler(DbContext dbContext, ILogger logger, TValidator validator, IMapper mapper)
+        public UpdateEntityFromDtoHandler(ConditionMonitoringDbContext dbContext, ILogger logger, TValidator validator, IMapper mapper)
             : base(dbContext, logger, mapper)
         {
             Validator = validator;
@@ -29,7 +29,12 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
         {
             T entity;
             try
-            {                                
+            {
+                var e = await Context.Set<T>().FindAsync(request.Id)
+                   ?? throw new RestException(HttpStatusCode.NotFound, $"Could not find a {typeof(T).Name} with an Id of {request.Id}");
+
+                Context.Entry(e).State = EntityState.Detached;
+
                 request.Dto = SanatizeData.SanitizeStrings(request.Dto);
 
                 entity = Mapper.Map<T>(request.Dto);
@@ -40,16 +45,9 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
                 Context.Entry(entity).State = EntityState.Modified;
                 await Context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException e)
-            {
-                _ = await Context.Set<T>().FindAsync(request.Id)
-                    ?? throw new RestException(HttpStatusCode.NotFound, $"Could not find a {typeof(T).Name} with an Id of {request.Id}");
-
-                throw;
-            }
             catch(Exception e)
             {
-                throw new RestException(HttpStatusCode.BadRequest, e);
+                throw new RestException(HttpStatusCode.BadRequest, e.Message);
             }
             return entity;
         }

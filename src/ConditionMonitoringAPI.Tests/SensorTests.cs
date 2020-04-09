@@ -1,46 +1,24 @@
-using AutoMapper;
 using ConditionMonitoringAPI.Exceptions;
 using ConditionMonitoringAPI.Features.Crosscutting.Commands;
 using ConditionMonitoringAPI.Features.Crosscutting.Queries;
-using ConditionMonitoringAPI.Features.Readings;
 using ConditionMonitoringAPI.Features.Sensors;
 using ConditionMonitoringAPI.Features.Sensors.Dtos;
 using Domain.Enums;
 using Domain.Interfaces;
 using Domain.Models;
 using FluentAssertions;
-using FluentValidation.Results;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
 using System.Net;
-using System.Threading;
 using static ConditionMonitoringAPI.Features.Sensors.SensorHandlers;
 
 namespace ConditionMonitoringAPI.Tests
 {
     [TestClass]
-    public class SensorTests
+    public class SensorTests : AbstractTestClass
     {
-        Mock<IDateTime> DateTime;
-        DateTimeOffset DateTimeDefualt;
-        ConditionMonitoringDbContext Context;
-        CancellationToken CancToken => new CancellationToken();
-        IMapper Mapper;
-
-        [TestInitialize]
-        public void Initialize()
-        {
-            DateTimeDefualt = new DateTimeOffset(2020, 04, 04, 13, 12, 11, TimeSpan.Zero);
-            DateTime = Utils.Utils.GetMockDateTime(DateTimeDefualt);
-            Context = DbContextMocker.GetConditionMonitoringDbContextMock("ConditionMonitoring", DateTime.Object);
-
-            var myProfile = new FeaturesProfile();
-            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
-            Mapper = new Mapper(configuration);
-        }
-
         [TestMethod]
         public void GetExistingSensorByIdSucceeds()
         {
@@ -51,6 +29,7 @@ namespace ConditionMonitoringAPI.Tests
             var handler = new GetSensorByIdHandler(Context, logger.Object, Mapper);
             var query = new GetEntityById<Sensor<ISensorReading>, long>(1);
 
+            Seed(Context);
             //Act
             var result = handler.Handle(query, CancToken).Result;
 
@@ -71,7 +50,10 @@ namespace ConditionMonitoringAPI.Tests
             Action act = () => handler.Handle(query, CancToken).Result.Should();
 
             //Assert
-            act.Should().Throw<Exception>().WithMessage("Could not find a Sensor`1 with an Id of 0");
+            act.Should().Throw<RestException>()
+                .WithMessage("Could not find a Sensor`1 with an Id of 0")
+                .And
+                .StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         [TestMethod]
@@ -86,12 +68,7 @@ namespace ConditionMonitoringAPI.Tests
                 Pin = 456
             };
 
-            var validatorResultMock = new Mock<ValidationResult>();
-            validatorResultMock.Setup(x => x.IsValid).Returns(true);
-
-            var validatorMock = new Mock<SensorValidator>();
-            validatorMock.Setup(x => x.Validate(It.IsAny<Sensor<ISensorReading>>())).Returns(validatorResultMock.Object);
-
+            var validatorMock = GetValidatorMock<SensorValidator, Sensor<ISensorReading>>();
             var logger = new Mock<ILogger<CreateSensorHandler>>();
 
             var handler = new CreateSensorHandler(Context, logger.Object, validatorMock.Object, Mapper);
@@ -113,11 +90,7 @@ namespace ConditionMonitoringAPI.Tests
             //Arrange
             var entity = new SensorDto();
 
-            var validatorResultMock = new Mock<ValidationResult>();
-            validatorResultMock.Setup(x => x.IsValid).Returns(false);
-
-            var validatorMock = new Mock<SensorValidator>();
-            validatorMock.Setup(x => x.Validate(It.IsAny<Sensor<ISensorReading>>())).Returns(validatorResultMock.Object);
+            var validatorMock = GetValidatorMock<SensorValidator, Sensor<ISensorReading>>(false);
 
             var logger = new Mock<ILogger<CreateSensorHandler>>();
 
@@ -128,7 +101,10 @@ namespace ConditionMonitoringAPI.Tests
             Action act = () => handler.Handle(query, CancToken).Result.Should();
 
             //Assert
-            act.Should().Throw<Exception>();
+            act.Should().Throw<RestException>()
+                .WithMessage("Exception of type 'FluentValidation.ValidationException' was thrown.")
+                .And
+                .StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
         [TestMethod]
@@ -136,13 +112,13 @@ namespace ConditionMonitoringAPI.Tests
         {
             //Arrange
             var entity = new Sensor<ISensorReading>() { Id = 42};
-
-            Context.Set<Sensor<ISensorReading>>().Add(entity);
-            Context.SaveChanges();
+            var context = Context;
+            context.Set<Sensor<ISensorReading>>().Add(entity);
+            context.SaveChanges();
 
             var logger = new Mock<ILogger<DeleteSensorByIdHandler>>();
 
-            var handler = new DeleteSensorByIdHandler(Context, logger.Object, Mapper);
+            var handler = new DeleteSensorByIdHandler(context, logger.Object, Mapper);
             var query = new DeleteEntity<Sensor<ISensorReading>, long>(42);
 
             //Act
@@ -166,8 +142,77 @@ namespace ConditionMonitoringAPI.Tests
             Action act = () => handler.Handle(query, CancToken).Result.Should();
 
             //Assert
-            act.Should().Throw<RestException>().Which
+            act.Should().Throw<RestException>()
+                .WithMessage("Could not find a Sensor`1 with an Id of '42'")
+                .And
                 .StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [TestMethod]
+        public void UpdateExistingSensorSucceeds()
+        {
+            //Arrange
+            var dto = new SensorDto() { Name = "updatedname", BoardId = 2 };
+
+            var logger = new Mock<ILogger<UpdateSensorHandler>>();
+            var validatorMock = GetValidatorMock<SensorValidator, Sensor<ISensorReading>>();
+
+            var handler = new UpdateSensorHandler(Context, logger.Object, validatorMock.Object, Mapper);
+            var query = new UpdateEntityFromDto<Sensor<ISensorReading>, long, SensorDto>(1, dto);
+
+            Seed(Context);
+
+            //Act
+            var result = handler.Handle(query, CancToken).Result;
+
+            //Assert
+            result.Should().NotBeNull();
+            result.Name.Should().Be(dto.Name);
+        }
+
+        [TestMethod]
+        public void UpdateExistingSensorWithBadBoardIdReadingFailsWithException()
+        {
+            //Arrange
+            var dto = new SensorDto() { Name = "updatedname", BoardId = 3 };
+
+            var logger = new Mock<ILogger<UpdateSensorHandler>>();
+            var validatorMock = GetValidatorMock<SensorValidator, Sensor<ISensorReading>>();
+
+            var handler = new UpdateSensorHandler(Context, logger.Object, validatorMock.Object, Mapper);
+            var query = new UpdateEntityFromDto<Sensor<ISensorReading>, long, SensorDto>(1, dto);
+
+            Seed(Context);
+
+            //Act
+            Action act = () => handler.Handle(query, CancToken).Result.Should();
+
+            //Assert
+            act.Should().Throw<RestException>()
+                .WithMessage("Could not find a board with an Id of 3")
+                .And.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        public override void Seed(ConditionMonitoringDbContext dbContext)
+        {
+            var board = new Board()
+            {
+                Id = 2
+            };
+            dbContext.Add(board);
+
+            var sensors = new[]
+            {
+                new Sensor<ISensorReading>()
+                {
+                    Id = 1,
+                    Name = "AName",
+                    Pin = 123,
+                    Board = board
+                }
+            };
+            dbContext.AddRange(sensors);
+            dbContext.SaveChanges();
         }
     }
 }

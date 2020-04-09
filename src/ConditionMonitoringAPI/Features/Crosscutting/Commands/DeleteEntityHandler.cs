@@ -14,7 +14,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
     public abstract class DeleteEntityHandler<T, TId> : AbstractRequestHandler<T, TId, DeleteEntity<T, TId>, bool>
         where T : class, IHasId<TId>
     {
-        public DeleteEntityHandler(DbContext dbContext, ILogger logger, IMapper mapper)
+        public DeleteEntityHandler(ConditionMonitoringDbContext dbContext, ILogger logger, IMapper mapper)
             : base(dbContext, logger, mapper)
         {
         }
