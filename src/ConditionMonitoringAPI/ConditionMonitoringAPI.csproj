@@ -4,6 +4,15 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>05b3885a-ca77-437e-a967-7c6580b25f6a</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Company />
+    <Authors>Harry Whittaker</Authors>
+    <PackageId>Condition.Monitoring.API</PackageId>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath></OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,6 +44,5 @@
   <ItemGroup>
     <Folder Include="Migrations\" />
   </ItemGroup>
-
 
 </Project>
