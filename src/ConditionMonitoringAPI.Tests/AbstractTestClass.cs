@@ -25,7 +25,7 @@ namespace ConditionMonitoringAPI.Tests
             DateTime = Utils.Utils.GetMockDateTime(DateTimeDefualt);
             Context = DbContextMocker.GetConditionMonitoringDbContext(DateTime.Object);
 
-            var myProfile = new FeaturesProfile();
+            var myProfile = new MappingProfile();
             var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
             Mapper = new Mapper(configuration);
         }

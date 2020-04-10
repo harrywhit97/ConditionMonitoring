@@ -69,12 +69,14 @@ namespace ConditionMonitoringAPI
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
             });
 
+            services.AddLogging();
+
             services.AddScoped<LightSensorReadingValidator>();
             services.AddScoped<BoardValidator>();
             services.AddScoped<SensorValidator>();
 
             services.AddTransient<IDateTime, DateTimeService>();
-            services.AddAutoMapper(typeof(FeaturesProfile));
+            services.AddAutoMapper(typeof(MappingProfile));
             services.AddMediatR(Assembly.GetExecutingAssembly());
         }
 

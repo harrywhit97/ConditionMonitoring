@@ -7,13 +7,12 @@ using Domain.Models;
 
 namespace ConditionMonitoringAPI.Features.Readings
 {
-    public class FeaturesProfile : Profile
+    public class MappingProfile : Profile
     {
-        public FeaturesProfile()
+        public MappingProfile()
         {
             CreateMap<RawSensorReadingDto, ISensorReading>();
             CreateMap<LightSensorReadingDto, LightSensorReading>();
-
             CreateMap<BoardDto, Board>();
             CreateMap<SensorDto, Sensor<ISensorReading>>();
         }

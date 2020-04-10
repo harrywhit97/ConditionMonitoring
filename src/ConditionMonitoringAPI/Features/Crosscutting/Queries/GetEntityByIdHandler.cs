@@ -2,6 +2,7 @@
 using ConditionMonitoringAPI.Abstract;
 using ConditionMonitoringAPI.Exceptions;
 using Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Net;
 using System.Threading;
@@ -12,7 +13,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Queries
     public abstract class GetEntityByIdHandler<T, TId> : AbstractRequestHandler<T, TId, GetEntityById<T, TId>>
         where T : class, IHasId<TId>
             {
-        public GetEntityByIdHandler(ConditionMonitoringDbContext dbContext, ILogger logger, IMapper mapper)
+        public GetEntityByIdHandler(DbContext dbContext, ILogger logger, IMapper mapper)
             : base(dbContext, logger, mapper)
         {
         }

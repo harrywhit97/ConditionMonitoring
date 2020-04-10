@@ -5,6 +5,7 @@ using Domain.Interfaces;
 using Domain.Models;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 
 namespace ConditionMonitoringAPI.Features.Readings.Controllers
@@ -13,10 +14,12 @@ namespace ConditionMonitoringAPI.Features.Readings.Controllers
     public class RawSensorReadingController : ControllerBase
     {
         readonly IMediator Mediator;
+        readonly ILogger Logger;
 
-        public RawSensorReadingController(IMediator mediator)
+        public RawSensorReadingController(IMediator mediator, ILogger<RawSensorReadingController> logger)
         {
             Mediator = mediator;
+            Logger = logger;
         }
 
         [HttpPost]
@@ -42,17 +45,13 @@ namespace ConditionMonitoringAPI.Features.Readings.Controllers
         [HttpPost]
         public IActionResult Post([FromBody]RawSensorReadingDto readingDto)
         {
-            int pin;
-            Board board;
             ISensorReading reading;
             try
             {
-                pin = GetPinFromHeaders();
+                readingDto.Pin ??= GetPinFromHeaders();
+                readingDto.IpAddress ??= GetIpFromRequest();
 
-                readingDto.Pin = pin;
-                readingDto.IpAddress = GetIpFromRequest();
-
-                board = Mediator.Send(new GetBoardByIp(readingDto.IpAddress)).Result;
+                var board = Mediator.Send(new GetBoardByIp(readingDto.IpAddress)).Result;
                 reading = Mediator.Send(new CreateReading(readingDto, board)).Result;
             }
             catch (Exception e)

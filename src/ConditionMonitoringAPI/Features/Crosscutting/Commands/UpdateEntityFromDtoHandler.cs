@@ -19,7 +19,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
     {
         readonly TValidator Validator;
 
-        public UpdateEntityFromDtoHandler(ConditionMonitoringDbContext dbContext, ILogger logger, TValidator validator, IMapper mapper)
+        public UpdateEntityFromDtoHandler(DbContext dbContext, ILogger logger, TValidator validator, IMapper mapper)
             : base(dbContext, logger, mapper)
         {
             Validator = validator;

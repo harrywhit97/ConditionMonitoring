@@ -4,6 +4,7 @@ using ConditionMonitoringAPI.Features.Crosscutting.Commands;
 using ConditionMonitoringAPI.Features.Crosscutting.Queries;
 using ConditionMonitoringAPI.Features.Readings.Dtos;
 using ConditionMonitoringAPI.Features.SensorsReadings.Validators;
+using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.Extensions.Logging;
 using System.Net;
@@ -37,7 +38,7 @@ namespace ConditionMonitoringAPI.Features.Readings
 
         public override Task<LightSensorReading> Handle(UpdateEntityFromDto<LightSensorReading, long, LightSensorReadingDto> request, CancellationToken cancellationToken)
         {
-            request.Dto.Sensor = Context.Sensors.Find(request.Dto.SensorId);
+            request.Dto.Sensor = Context.Set<Sensor<ISensorReading>>().Find(request.Dto.SensorId);
 
             _ = request.Dto.Sensor ?? throw new RestException(HttpStatusCode.BadRequest, $"Could not find a sensor with an Id of {request.Dto.SensorId}");
 

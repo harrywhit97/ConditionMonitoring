@@ -12,7 +12,6 @@ using System.Net;
 using Microsoft.AspNet.OData;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
-using System.Net.Mime;
 
 namespace ConditionMonitoringAPI.Abstract
 {
@@ -63,7 +62,6 @@ namespace ConditionMonitoringAPI.Abstract
             try
             {
                 var entity = await Mediator.Send(new CreateEntityFromDto<T, TId, TDto>(dto), new CancellationToken());
-                
                 return CreatedAtAction(nameof(Get), new { id = entity.Id }, entity);
             }
             catch (Exception e)
@@ -85,13 +83,9 @@ namespace ConditionMonitoringAPI.Abstract
             }
             catch (RestException e)
             {
-                switch (e.StatusCode)
-                {
-                    case HttpStatusCode.NotFound:
-                        return NotFound(e.Message);
-                    default:
-                        return BadRequest(e.Message);
-                }
+                if (e.StatusCode == HttpStatusCode.NotFound)
+                    return NotFound(e.Message);
+                return BadRequest(e.Message);
             }
             catch (Exception e)
             {
@@ -114,13 +108,9 @@ namespace ConditionMonitoringAPI.Abstract
             }
             catch(RestException e)
             {
-                switch (e.StatusCode)
-                {                    
-                    case HttpStatusCode.NotFound:
-                        return NotFound(e.Message);
-                    default:
-                        return BadRequest(e.Message);
-                }
+                if(e.StatusCode == HttpStatusCode.NotFound)
+                    return NotFound(e.Message);
+                return BadRequest(e.Message);
             }
             catch (Exception e)
             {

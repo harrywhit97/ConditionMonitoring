@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
+using ConditionMonitoringAPI.Abstract;
 using ConditionMonitoringCore;
 using Domain.Interfaces;
-using Domain.Models;
-using MediatR;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -11,21 +10,17 @@ using System.Threading.Tasks;
 
 namespace ConditionMonitoringAPI.Features.Readings.Commands
 {
-    public class CreateReadingHandler : IRequestHandler<CreateReading, ISensorReading>
+    public class CreateReadingHandler : AbstractRequestHandler<ISensorReading, long, CreateReading>
     {
 
-        readonly ILogger Logger;
-        readonly IMapper Mapper;
-
-        public CreateReadingHandler(ILogger<CreateReadingHandler> logger, IMapper mapper)
+        public CreateReadingHandler(ConditionMonitoringDbContext context, ILogger<CreateReadingHandler> logger, IMapper mapper)
+            :base(context, logger, mapper)
         {
-            Logger = logger;
-            Mapper = mapper;
         }
 
-        public Task<ISensorReading> Handle(CreateReading request, CancellationToken cancellationToken)
+        public override Task<ISensorReading> Handle(CreateReading request, CancellationToken cancellationToken)
         {
-            Logger.LogInformation($"{nameof(CreateReadingHandler)} recieved a request");
+            Logger.LogInformation($"Recieved a request");
 
             var pin = request.RawSensorReadingDto.Pin;
 

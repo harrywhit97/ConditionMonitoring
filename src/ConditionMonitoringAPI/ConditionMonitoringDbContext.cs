@@ -42,6 +42,11 @@ namespace ConditionMonitoringAPI
                 .WithMany(s => s.Readings as ICollection<LightSensorReading>)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelbuilder.Entity<LightSensorReading>()
+                .HasOne(r => r.Sensor)
+                .WithMany(s => s.Readings as ICollection<LightSensorReading>)
+                .OnDelete(DeleteBehavior.Cascade);
+
             base.OnModelCreating(modelbuilder);
         }
 

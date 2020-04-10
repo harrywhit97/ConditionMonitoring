@@ -1,6 +1,5 @@
 ﻿using Domain.Interfaces;
 using ConditionMonitoringAPI.Features.Sensors.Dtos;
-using ConditionMonitoringAPI.Features.Crosscutting;
 using Domain.Models;
 using ConditionMonitoringAPI.Features.Crosscutting.Queries;
 using Microsoft.Extensions.Logging;
@@ -13,7 +12,7 @@ using System.Net;
 
 namespace ConditionMonitoringAPI.Features.Sensors
 {
-    public class SensorHandlers : BaseHandlers<Sensor<ISensorReading>, long, SensorValidator, SensorDto>
+    public class SensorHandlers
     {
         public class GetSensorByIdHandler : GetEntityByIdHandler<Sensor<ISensorReading>, long>
         {
@@ -40,7 +39,7 @@ namespace ConditionMonitoringAPI.Features.Sensors
 
             public override Task<Sensor<ISensorReading>> Handle(UpdateEntityFromDto<Sensor<ISensorReading>, long, SensorDto> request, CancellationToken cancellationToken)
             {
-                request.Dto.Board = Context.Boards.Find(request.Dto.BoardId);
+                request.Dto.Board = Context.Set<Board>().Find(request.Dto.BoardId);
 
                 _ = request.Dto.Board ?? throw new RestException(HttpStatusCode.BadRequest, $"Could not find a board with an Id of {request.Dto.BoardId}");
 

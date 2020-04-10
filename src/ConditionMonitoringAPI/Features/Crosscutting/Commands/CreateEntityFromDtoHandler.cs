@@ -20,7 +20,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
     {
         readonly TValidator Validator;
 
-        public CreateEntityFromDtoHandler(ConditionMonitoringDbContext dbContext, ILogger logger, TValidator validator, IMapper mapper)
+        public CreateEntityFromDtoHandler(DbContext dbContext, ILogger logger, TValidator validator, IMapper mapper)
             : base(dbContext, logger, mapper)
         {
             Validator = validator;
