@@ -10,6 +10,6 @@
     <description>Condition Monitoring Api</description>
   </metadata>
   <files>
-    <file src="src/ConditionMonitoringAPI/bin/Release/netcoreapp3.1/**" />
+    <file src="src/ConditionMonitoringAPI/bin/Release/netcoreapp3.1/**"  target=""/>
   </files>
 </package>
