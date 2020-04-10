@@ -16,6 +16,7 @@ namespace ConditionMonitoringAPI
                 {
                     webBuilder.UseKestrel();
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                .UseWindowsService();
     }
 }
