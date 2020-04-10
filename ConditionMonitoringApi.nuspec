@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/10/nuspec.xsd">
+  <metadata>
+    <id>ConditionMonitoringApi</id>
+    <version>$version$</version>
+    <authors>Harry Whittaker</authors>
+    <owners>Harry Whittaker</owners>
+    <projectUrl>https://github.com/harrywhit97/ConditionMonitoring</projectUrl>
+	<title>Condition Monitoring Api</title>
+    <description>Condition Monitoring Api</description>
+  </metadata>
+  <files>
+    <file src="src/ConditionMonitoringAPI/bin/Release/netcoreapp3.1/**" />
+  </files>
+</package>
