@@ -21,6 +21,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
 
         public override async Task<bool> Handle(DeleteEntity<T, TId> request, CancellationToken cancellationToken)
         {
+            Logger.LogDebug("Recieved request");
             var entity = await Context.Set<T>().FindAsync(request.Id);
 
             if (entity == null)

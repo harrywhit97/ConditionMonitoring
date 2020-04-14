@@ -20,6 +20,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Queries
 
         public override async Task<T> Handle(GetEntityById<T, TId> request, CancellationToken cancellationToken)
         {
+            Logger.LogDebug("Recieved request");
             var result = await Context.Set<T>().FindAsync(request.Id);
             _ = result ?? throw new RestException(HttpStatusCode.NotFound , $"Could not find a {typeof(T).Name} with an Id of {request.Id}");
             return result;

@@ -28,6 +28,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
 
         public override async Task<T> Handle(CreateEntityFromDto<T, TId, TDto> request, CancellationToken cancellationToken)
         {
+            Logger.LogDebug("Recieved request");
             var Dto = request.Dto ?? throw new RestException(HttpStatusCode.BadRequest, "Null Dto");
             T entity;
             try
@@ -37,10 +38,6 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
                 entity = Mapper.Map<T>(Dto);
 
                 ValidationUtils.ValidateEntity(Validator, entity);
-            }
-            catch (ValidationException e)
-            {
-                throw new RestException(HttpStatusCode.BadRequest, e.Message);
             }
             catch(Exception e)
             {

@@ -27,6 +27,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
 
         public override async Task<T> Handle(UpdateEntityFromDto<T, TId, TDto> request, CancellationToken cancellationToken)
         {
+            Logger.LogDebug("Recieved request");
             T entity;
             try
             {
