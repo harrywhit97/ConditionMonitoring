@@ -13,6 +13,14 @@ using System.Threading.Tasks;
 
 namespace ConditionMonitoringAPI.Features.Readings
 {
+    public class GetLightSensorReadingsHandler : GetEntitiesHandler<LightSensorReading, long>
+    {
+        public GetLightSensorReadingsHandler(ConditionMonitoringDbContext context)
+            : base(context)
+        {
+        }
+    }
+
     public class GetLightSensorReadingByIdHandler : GetEntityByIdHandler<LightSensorReading, long>
     {
         public GetLightSensorReadingByIdHandler(ConditionMonitoringDbContext context)

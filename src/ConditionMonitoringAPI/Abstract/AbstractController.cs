@@ -130,8 +130,10 @@ namespace ConditionMonitoringAPI.Abstract
             catch(RestException e)
             {
                 Logger.LogError(e, "There was an error processing a Put request");
+
                 if (e.StatusCode == HttpStatusCode.NotFound)
                     return NotFound(e.Message);
+
                 return BadRequest(e.Message);
             }
             catch (Exception e)

@@ -13,6 +13,14 @@ namespace ConditionMonitoringAPI.Features.Sensors
 {
     public class SensorHandlers
     {
+        public class GetSensorsHandler : GetEntitiesHandler<Sensor<ISensorReading>, long>
+        {
+            public GetSensorsHandler (ConditionMonitoringDbContext context)
+                : base(context)
+            {
+            }
+        }
+
         public class GetSensorByIdHandler : GetEntityByIdHandler<Sensor<ISensorReading>, long>
         {
             public GetSensorByIdHandler(ConditionMonitoringDbContext context)
