@@ -3,9 +3,8 @@ using ConditionMonitoringAPI.Abstract;
 using ConditionMonitoringAPI.Exceptions;
 using ConditionMonitoringAPI.Utils;
 using Domain.Interfaces;
-using FluentValidation;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
 using System.Threading;
@@ -14,21 +13,23 @@ using System.Threading.Tasks;
 namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
 {
 
-    public abstract class CreateEntityFromDtoHandler<T, TId, TValidator, TDto> : AbstractRequestHandler<T, TId, CreateEntityFromDto<T, TId, TDto>>
+    public abstract class CreateEntityFromDtoHandler<T, TId, TValidator, TDto> : IRequestHandler<CreateEntityFromDto<T, TId, TDto>, T>
         where T : class, IHasId<TId>
         where TValidator : AbstractValidatorWrapper<T>
     {
         readonly TValidator Validator;
+        readonly protected DbContext Context;
+        readonly protected IMapper Mapper;
 
-        public CreateEntityFromDtoHandler(DbContext dbContext, ILogger logger, TValidator validator, IMapper mapper)
-            : base(dbContext, logger, mapper)
+        public CreateEntityFromDtoHandler(DbContext dbContext, TValidator validator, IMapper mapper)
         {
+            Context = dbContext;
+            Mapper = mapper;
             Validator = validator;
         }
 
-        public override async Task<T> Handle(CreateEntityFromDto<T, TId, TDto> request, CancellationToken cancellationToken)
+        public async Task<T> Handle(CreateEntityFromDto<T, TId, TDto> request, CancellationToken cancellationToken)
         {
-            Logger.LogDebug("Recieved request");
             var Dto = request.Dto ?? throw new RestException(HttpStatusCode.BadRequest, "Null Dto");
             T entity;
             try

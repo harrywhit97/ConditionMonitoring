@@ -3,31 +3,33 @@ using ConditionMonitoringAPI.Exceptions;
 using ConditionMonitoringAPI.Utils;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
 using AutoMapper;
+using MediatR;
 
 namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
 {
 
-    public abstract class UpdateEntityFromDtoHandler<T, TId, TValidator, TDto> : AbstractRequestHandler<T, TId, UpdateEntityFromDto<T, TId, TDto>>
+    public abstract class UpdateEntityFromDtoHandler<T, TId, TValidator, TDto> : IRequestHandler<UpdateEntityFromDto<T, TId, TDto>, T>
         where T : class, IHasId<TId>
         where TValidator : AbstractValidatorWrapper<T>
     {
         readonly TValidator Validator;
+        protected readonly DbContext Context;
+        readonly IMapper Mapper;
 
-        public UpdateEntityFromDtoHandler(DbContext dbContext, ILogger logger, TValidator validator, IMapper mapper)
-            : base(dbContext, logger, mapper)
+        public UpdateEntityFromDtoHandler(DbContext dbContext, TValidator validator, IMapper mapper)
         {
             Validator = validator;
+            Context = dbContext;
+            Mapper = mapper;
         }
 
-        public override async Task<T> Handle(UpdateEntityFromDto<T, TId, TDto> request, CancellationToken cancellationToken)
+        public virtual async Task<T> Handle(UpdateEntityFromDto<T, TId, TDto> request, CancellationToken cancellationToken)
         {
-            Logger.LogDebug("Recieved request");
             T entity;
             try
             {

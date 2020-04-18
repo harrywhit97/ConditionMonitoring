@@ -26,7 +26,7 @@ namespace ConditionMonitoringAPI.Tests
             var logger = new Mock<ILogger<GetSensorByIdHandler>>();
 
 
-            var handler = new GetSensorByIdHandler(Context, logger.Object, Mapper);
+            var handler = new GetSensorByIdHandler(Context);
             var query = new GetEntityById<Sensor<ISensorReading>, long>(1);
 
             Seed(Context);
@@ -43,7 +43,7 @@ namespace ConditionMonitoringAPI.Tests
             //Arrange
             var logger = new Mock<ILogger<GetSensorByIdHandler>>();
 
-            var handler = new GetSensorByIdHandler(Context, logger.Object, Mapper);
+            var handler = new GetSensorByIdHandler(Context);
             var query = new GetEntityById<Sensor<ISensorReading>, long>(0);
 
             //Act
@@ -71,7 +71,7 @@ namespace ConditionMonitoringAPI.Tests
             var validatorMock = GetValidatorMock<SensorValidator, Sensor<ISensorReading>>();
             var logger = new Mock<ILogger<CreateSensorHandler>>();
 
-            var handler = new CreateSensorHandler(Context, logger.Object, validatorMock.Object, Mapper);
+            var handler = new CreateSensorHandler(Context, validatorMock.Object, Mapper);
             var query = new CreateEntityFromDto<Sensor<ISensorReading>, long, SensorDto>(entity);
 
             //Act
@@ -94,7 +94,7 @@ namespace ConditionMonitoringAPI.Tests
 
             var logger = new Mock<ILogger<CreateSensorHandler>>();
 
-            var handler = new CreateSensorHandler(Context, logger.Object, validatorMock.Object, Mapper);
+            var handler = new CreateSensorHandler(Context, validatorMock.Object, Mapper);
             var query = new CreateEntityFromDto<Sensor<ISensorReading>, long, SensorDto>(entity);
 
             //Act
@@ -118,7 +118,7 @@ namespace ConditionMonitoringAPI.Tests
 
             var logger = new Mock<ILogger<DeleteSensorByIdHandler>>();
 
-            var handler = new DeleteSensorByIdHandler(context, logger.Object, Mapper);
+            var handler = new DeleteSensorByIdHandler(context);
             var query = new DeleteEntity<Sensor<ISensorReading>, long>(42);
 
             //Act
@@ -135,7 +135,7 @@ namespace ConditionMonitoringAPI.Tests
 
             var logger = new Mock<ILogger<DeleteSensorByIdHandler>>();
 
-            var handler = new DeleteSensorByIdHandler(Context, logger.Object, Mapper);
+            var handler = new DeleteSensorByIdHandler(Context);
             var query = new DeleteEntity<Sensor<ISensorReading>, long>(42);
 
             //Act
@@ -157,7 +157,7 @@ namespace ConditionMonitoringAPI.Tests
             var logger = new Mock<ILogger<UpdateSensorHandler>>();
             var validatorMock = GetValidatorMock<SensorValidator, Sensor<ISensorReading>>();
 
-            var handler = new UpdateSensorHandler(Context, logger.Object, validatorMock.Object, Mapper);
+            var handler = new UpdateSensorHandler(Context, validatorMock.Object, Mapper);
             var query = new UpdateEntityFromDto<Sensor<ISensorReading>, long, SensorDto>(1, dto);
 
             Seed(Context);
@@ -179,7 +179,7 @@ namespace ConditionMonitoringAPI.Tests
             var logger = new Mock<ILogger<UpdateSensorHandler>>();
             var validatorMock = GetValidatorMock<SensorValidator, Sensor<ISensorReading>>();
 
-            var handler = new UpdateSensorHandler(Context, logger.Object, validatorMock.Object, Mapper);
+            var handler = new UpdateSensorHandler(Context, validatorMock.Object, Mapper);
             var query = new UpdateEntityFromDto<Sensor<ISensorReading>, long, SensorDto>(1, dto);
 
             Seed(Context);

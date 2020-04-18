@@ -15,16 +15,16 @@ namespace ConditionMonitoringAPI.Features.Readings
 {
     public class GetLightSensorReadingByIdHandler : GetEntityByIdHandler<LightSensorReading, long>
     {
-        public GetLightSensorReadingByIdHandler(ConditionMonitoringDbContext context, ILogger<GetLightSensorReadingByIdHandler> logger, IMapper mapper)
-            : base(context, logger, mapper)
+        public GetLightSensorReadingByIdHandler(ConditionMonitoringDbContext context)
+            : base(context)
         {
         }
     }
 
     public class CreateLightSensorReadingHandler : CreateEntityFromDtoHandler<LightSensorReading, long, LightSensorReadingValidator, LightSensorReadingDto>
     {
-        public CreateLightSensorReadingHandler(ConditionMonitoringDbContext context, ILogger<CreateLightSensorReadingHandler> logger, LightSensorReadingValidator validator, IMapper mapper)
-            : base(context, logger, validator, mapper)
+        public CreateLightSensorReadingHandler(ConditionMonitoringDbContext context, LightSensorReadingValidator validator, IMapper mapper)
+            : base(context, validator, mapper)
         {
         }
     }
@@ -32,7 +32,7 @@ namespace ConditionMonitoringAPI.Features.Readings
     public class UpdateLightSensorReadingHandler : UpdateEntityFromDtoHandler<LightSensorReading, long, LightSensorReadingValidator, LightSensorReadingDto>
     {
         public UpdateLightSensorReadingHandler(ConditionMonitoringDbContext context, ILogger<UpdateLightSensorReadingHandler> logger, LightSensorReadingValidator validator, IMapper mapper)
-            : base(context, logger, validator, mapper)
+            : base(context, validator, mapper)
         {
         }
 
@@ -48,8 +48,8 @@ namespace ConditionMonitoringAPI.Features.Readings
 
     public class DeleteLightSensorReadingByIdHandler : DeleteEntityHandler<LightSensorReading, long>
     {
-        public DeleteLightSensorReadingByIdHandler(ConditionMonitoringDbContext context, ILogger<DeleteLightSensorReadingByIdHandler> logger, IMapper mapper)
-            : base(context, logger, mapper)
+        public DeleteLightSensorReadingByIdHandler(ConditionMonitoringDbContext context)
+            : base(context)
         {
         }
     }

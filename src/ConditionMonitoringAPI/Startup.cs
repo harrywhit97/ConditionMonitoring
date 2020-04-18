@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using AutoMapper;
 using ConditionMonitoringAPI.Features.Boards.Validators;
+using ConditionMonitoringAPI.Features.Crosscutting.PipelineBehaviors;
 using ConditionMonitoringAPI.Features.Readings;
 using ConditionMonitoringAPI.Features.Sensors;
 using ConditionMonitoringAPI.Features.SensorsReadings.Validators;
@@ -78,6 +79,7 @@ namespace ConditionMonitoringAPI
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddAutoMapper(typeof(MappingProfile));
             services.AddMediatR(Assembly.GetExecutingAssembly());
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingPipelineBehavior<,>));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

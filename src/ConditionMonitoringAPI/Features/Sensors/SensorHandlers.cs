@@ -2,7 +2,6 @@
 using ConditionMonitoringAPI.Features.Sensors.Dtos;
 using Domain.Models;
 using ConditionMonitoringAPI.Features.Crosscutting.Queries;
-using Microsoft.Extensions.Logging;
 using ConditionMonitoringAPI.Features.Crosscutting.Commands;
 using AutoMapper;
 using System.Threading.Tasks;
@@ -16,24 +15,24 @@ namespace ConditionMonitoringAPI.Features.Sensors
     {
         public class GetSensorByIdHandler : GetEntityByIdHandler<Sensor<ISensorReading>, long>
         {
-            public GetSensorByIdHandler(ConditionMonitoringDbContext context, ILogger<GetSensorByIdHandler> logger, IMapper mapper)
-                : base(context, logger, mapper)
+            public GetSensorByIdHandler(ConditionMonitoringDbContext context)
+                : base(context)
             {
             }
         }
 
         public class CreateSensorHandler : CreateEntityFromDtoHandler<Sensor<ISensorReading>, long, SensorValidator, SensorDto>
         {
-            public CreateSensorHandler(ConditionMonitoringDbContext context, ILogger<CreateSensorHandler> logger, SensorValidator validator, IMapper mapper)
-                : base(context, logger, validator, mapper)
+            public CreateSensorHandler(ConditionMonitoringDbContext context, SensorValidator validator, IMapper mapper)
+                : base(context, validator, mapper)
             {
             }
         }
 
         public class UpdateSensorHandler : UpdateEntityFromDtoHandler<Sensor<ISensorReading>, long, SensorValidator, SensorDto>
         {
-            public UpdateSensorHandler(ConditionMonitoringDbContext context, ILogger<UpdateSensorHandler> logger, SensorValidator validator, IMapper mapper)
-                : base(context, logger, validator, mapper)
+            public UpdateSensorHandler(ConditionMonitoringDbContext context, SensorValidator validator, IMapper mapper)
+                : base(context, validator, mapper)
             {
             }
 
@@ -49,8 +48,8 @@ namespace ConditionMonitoringAPI.Features.Sensors
 
         public class DeleteSensorByIdHandler : DeleteEntityHandler<Sensor<ISensorReading>, long>
         {
-            public DeleteSensorByIdHandler(ConditionMonitoringDbContext context, ILogger<DeleteSensorByIdHandler> logger, IMapper mapper)
-                : base(context, logger, mapper)
+            public DeleteSensorByIdHandler(ConditionMonitoringDbContext context)
+                : base(context)
             {
             }
         }

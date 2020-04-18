@@ -36,8 +36,8 @@ namespace ConditionMonitoringAPI.Abstract
         [EnableQuery]
         public virtual IQueryable<T> Get() 
         {
-            Logger.LogInformation("Recieved Get All request");
-            return Context.Set<T>().AsQueryable();
+            Logger.LogDebug("Recieved Get All request");
+            return Mediator.Send(new GetEntiities<T, TId>()).Result;
         }
 
         [HttpGet("{Id}")]

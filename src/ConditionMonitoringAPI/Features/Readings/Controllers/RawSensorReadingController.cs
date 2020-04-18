@@ -1,4 +1,5 @@
-﻿using ConditionMonitoringAPI.Features.Boards.Queries;
+﻿using ConditionMonitoringAPI.Exceptions;
+using ConditionMonitoringAPI.Features.Boards.Queries;
 using ConditionMonitoringAPI.Features.Readings.Commands;
 using ConditionMonitoringAPI.Features.Readings.Dtos;
 using Domain.Interfaces;
@@ -7,6 +8,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Collections.Generic;
 
 namespace ConditionMonitoringAPI.Features.Readings.Controllers
 {
@@ -24,22 +26,27 @@ namespace ConditionMonitoringAPI.Features.Readings.Controllers
 
         [HttpPost]
         [Route("batch")]
-        public IActionResult Post([FromBody]RawSensorReadingBatchDto readingsBatch)
+        public IActionResult Post([FromBody]RawSensorReadingBatchDto readingsBatchDto)
         {
-            int pin;
+            Logger.LogDebug("Recieved post batch request");
+
+            IList<ISensorReading> readings;
             try
             {
-                pin = GetPinFromHeaders();
+                readingsBatchDto.Pin ??= GetPinFromHeaders();
+                readingsBatchDto.IpAddress ??= GetIpFromRequest();
+
+                readingsBatchDto.Board = Mediator.Send(new GetBoardByIp(readingsBatchDto.IpAddress)).Result;
+
+                readings = Mediator.Send(new CreateBatchOfReadings(readingsBatchDto)).Result;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
+                Logger.LogError(e, "There was an error processing a Post batch request");
                 return BadRequest(e.Message);
             }
 
-            var ip = GetIpFromRequest();
-            
-
-            return Ok();
+            return Ok(readings);
         }
 
         [HttpPost]
@@ -56,6 +63,7 @@ namespace ConditionMonitoringAPI.Features.Readings.Controllers
             }
             catch (Exception e)
             {
+                Logger.LogError(e, "There was an error processing a Post request");
                 return BadRequest(e.Message);
             }
             

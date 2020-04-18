@@ -1,11 +1,13 @@
 ﻿using AutoMapper;
 using ConditionMonitoringAPI.Abstract;
+using ConditionMonitoringAPI.Exceptions;
 using Domain.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,23 +22,24 @@ namespace ConditionMonitoringAPI.Features.Boards.Queries
             Ip = ip;
         }
 
-        public class GetBoardByIpHandler : AbstractRequestHandler<Board, long, GetBoardByIp>
+        public class GetBoardByIpHandler : IRequestHandler<GetBoardByIp, Board>
         {
-            public GetBoardByIpHandler(ConditionMonitoringDbContext dbContext, ILogger<GetBoardByIpHandler> logger, IMapper mapper)
-                : base(dbContext, logger, mapper)
+            ConditionMonitoringDbContext Context;
+            public GetBoardByIpHandler(ConditionMonitoringDbContext dbContext)
             {
+                Context = dbContext;
             }
 
-            public override Task<Board> Handle(GetBoardByIp request, CancellationToken cancellationToken)
+            public Task<Board> Handle(GetBoardByIp request, CancellationToken cancellationToken)
             {
-                Logger.LogInformation($"{nameof(GetBoardByIpHandler)} recieved request");
-
                 var ip = request.Ip;
 
-                var board = Context.Set<Board>().Include(x => x.Sensors)
-                    .Where(x => x.IpAddress == ip).FirstOrDefaultAsync();
+                var board = Context.Set<Board>()
+                    .Include(x => x.Sensors)
+                    .Where(x => x.IpAddress == ip)
+                    .FirstOrDefaultAsync();
 
-                return board ?? throw new Exception($"A board that has an Ip address of {ip} was not found.");
+                return board ?? throw new RestException(HttpStatusCode.NotFound, ($"A board that has an Ip address of {ip} was not found."));
             }
         }
     }

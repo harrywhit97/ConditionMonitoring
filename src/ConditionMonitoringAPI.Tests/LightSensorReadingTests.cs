@@ -25,7 +25,7 @@ namespace ConditionMonitoringAPI.Tests
             //Arrange
             var logger = new Mock<ILogger<GetLightSensorReadingByIdHandler>>();
 
-            var handler = new GetLightSensorReadingByIdHandler(Context, logger.Object, Mapper);
+            var handler = new GetLightSensorReadingByIdHandler(Context);
             var query = new GetEntityById<LightSensorReading, long>(1);
 
             Seed(Context);
@@ -43,7 +43,7 @@ namespace ConditionMonitoringAPI.Tests
             //Arrange
             var logger = new Mock<ILogger<GetLightSensorReadingByIdHandler>>();
 
-            var handler = new GetLightSensorReadingByIdHandler(Context, logger.Object, Mapper);
+            var handler = new GetLightSensorReadingByIdHandler(Context);
             var query = new GetEntityById<LightSensorReading, long>(0);
 
             //Act
@@ -69,7 +69,7 @@ namespace ConditionMonitoringAPI.Tests
             var validatorMock = GetValidatorMock<LightSensorReadingValidator, LightSensorReading>();
             var logger = new Mock<ILogger<CreateLightSensorReadingHandler>>();
 
-            var handler = new CreateLightSensorReadingHandler(Context, logger.Object, validatorMock.Object, Mapper);
+            var handler = new CreateLightSensorReadingHandler(Context, validatorMock.Object, Mapper);
             var query = new CreateEntityFromDto<LightSensorReading, long, LightSensorReadingDto>(entity);
 
             //Act
@@ -90,7 +90,7 @@ namespace ConditionMonitoringAPI.Tests
             var validatorMock = GetValidatorMock<LightSensorReadingValidator, LightSensorReading>(false);
             var logger = new Mock<ILogger<CreateLightSensorReadingHandler>>();
 
-            var handler = new CreateLightSensorReadingHandler(Context, logger.Object, validatorMock.Object, Mapper);
+            var handler = new CreateLightSensorReadingHandler(Context, validatorMock.Object, Mapper);
             var query = new CreateEntityFromDto<LightSensorReading, long, LightSensorReadingDto>(entity);
 
             //Act
@@ -114,7 +114,7 @@ namespace ConditionMonitoringAPI.Tests
 
             var logger = new Mock<ILogger<DeleteLightSensorReadingByIdHandler>>();
 
-            var handler = new DeleteLightSensorReadingByIdHandler(Context, logger.Object, Mapper);
+            var handler = new DeleteLightSensorReadingByIdHandler(Context);
             var query = new DeleteEntity<LightSensorReading, long>(42);
 
             //Act
@@ -130,7 +130,7 @@ namespace ConditionMonitoringAPI.Tests
             //Arrange
             var logger = new Mock<ILogger<DeleteLightSensorReadingByIdHandler>>();
 
-            var handler = new DeleteLightSensorReadingByIdHandler(Context, logger.Object, Mapper);
+            var handler = new DeleteLightSensorReadingByIdHandler(Context);
             var query = new DeleteEntity<LightSensorReading, long>(42);
 
             //Act
