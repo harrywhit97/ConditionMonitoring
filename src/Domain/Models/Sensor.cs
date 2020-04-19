@@ -13,7 +13,6 @@ namespace Domain.Models
         public virtual Board Board { get; set; }
         public long Pin { get; set; }
         public SensorType SensorType { get; set; }
-       // [JsonIgnore]
         public virtual ICollection<TReading> Readings { get; }
 
         public Sensor()

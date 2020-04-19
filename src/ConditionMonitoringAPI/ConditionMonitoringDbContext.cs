@@ -1,18 +1,15 @@
 ﻿using Domain.Abstract;
-using Domain.Enums;
 using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConditionMonitoringAPI
 {
     public class ConditionMonitoringDbContext : DbContext
-    {
-        
+    {        
         public DbSet<LightSensorReading> LightSensorReadings { get; set; }
         public DbSet<Sensor<ISensorReading>> Sensors { get; set; }
         public DbSet<Board> Boards { get; set; }
@@ -68,16 +65,5 @@ namespace ConditionMonitoringAPI
 
             return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
         }
-
-        //ModelBuilder ConfigSensorAndReading<TSensor, TReading>(ModelBuilder modelbuilder) 
-        //    where TSensor : class, ISensor<TReading> 
-        //    where TReading : class, ISensorReading<TSensor>
-        //{
-        //    modelbuilder.Entity<TReading>().HasOne<Board>();
-        //    modelbuilder.Entity<LightSensorReading>().HasOne(r => r.Sensor as LightSensor);
-        //    modelbuilder.Entity<TSensor>().HasOne<Board>();
-
-        //    return modelbuilder;
-        //}
     }
 }
