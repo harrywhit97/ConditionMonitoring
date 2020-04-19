@@ -34,6 +34,7 @@ namespace ConditionMonitoringAPI.Abstract
 
         [HttpGet]
         [EnableQuery]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public virtual IQueryable<T> Get() 
         {
             Logger.LogDebug("Recieved Get All request");
@@ -87,7 +88,7 @@ namespace ConditionMonitoringAPI.Abstract
             }
         }
 
-        [HttpDelete]
+        [HttpDelete("{Id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -113,7 +114,7 @@ namespace ConditionMonitoringAPI.Abstract
             }
         }
 
-        [HttpPut]
+        [HttpPut("{Id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

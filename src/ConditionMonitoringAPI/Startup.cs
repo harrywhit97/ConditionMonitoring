@@ -52,7 +52,7 @@ namespace ConditionMonitoringAPI
                     options.JsonSerializerOptions.IgnoreNullValues = true;
                 }); ;
 
-            //Work around to enable swagger
+            //Work around to enable swagger with Odata
             services.AddMvcCore(options =>
             {
                 foreach (var outputFormatter in options.OutputFormatters.OfType<ODataOutputFormatter>().Where(_ => _.SupportedMediaTypes.Count == 0))
