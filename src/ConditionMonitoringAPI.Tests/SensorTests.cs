@@ -50,10 +50,8 @@ namespace ConditionMonitoringAPI.Tests
             Action act = () => handler.Handle(query, CancToken).Result.Should();
 
             //Assert
-            act.Should().Throw<RestException>()
-                .WithMessage("Could not find a Sensor`1 with an Id of 0")
-                .And
-                .StatusCode.Should().Be(HttpStatusCode.NotFound);
+            act.Should().Throw<NotFoundException>()
+                .WithMessage("Entity \"Sensor`1\" (0) was not found.");
         }
 
         [TestMethod]
@@ -69,7 +67,6 @@ namespace ConditionMonitoringAPI.Tests
             };
 
             var validatorMock = GetValidatorMock<SensorValidator, Sensor<ISensorReading>>();
-            var logger = new Mock<ILogger<CreateSensorHandler>>();
 
             var handler = new CreateSensorHandler(Context, validatorMock.Object, Mapper);
             var query = new CreateEntityFromDto<Sensor<ISensorReading>, long, SensorDto>(entity);
@@ -101,10 +98,8 @@ namespace ConditionMonitoringAPI.Tests
             Action act = () => handler.Handle(query, CancToken).Result.Should();
 
             //Assert
-            act.Should().Throw<RestException>()
-                .WithMessage("Exception of type 'FluentValidation.ValidationException' was thrown.")
-                .And
-                .StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            act.Should().Throw<BadRequestException>()
+                .WithMessage("Exception of type 'FluentValidation.ValidationException' was thrown.");
         }
 
         [TestMethod]
@@ -115,8 +110,6 @@ namespace ConditionMonitoringAPI.Tests
             var context = Context;
             context.Set<Sensor<ISensorReading>>().Add(entity);
             context.SaveChanges();
-
-            var logger = new Mock<ILogger<DeleteSensorByIdHandler>>();
 
             var handler = new DeleteSensorByIdHandler(context);
             var query = new DeleteEntity<Sensor<ISensorReading>, long>(42);
@@ -132,7 +125,6 @@ namespace ConditionMonitoringAPI.Tests
         public void DeleteNonExistingSensorFailsWithException()
         {
             //Arrange
-
             var logger = new Mock<ILogger<DeleteSensorByIdHandler>>();
 
             var handler = new DeleteSensorByIdHandler(Context);
@@ -142,10 +134,8 @@ namespace ConditionMonitoringAPI.Tests
             Action act = () => handler.Handle(query, CancToken).Result.Should();
 
             //Assert
-            act.Should().Throw<RestException>()
-                .WithMessage("Could not find a Sensor`1 with an Id of '42'")
-                .And
-                .StatusCode.Should().Be(HttpStatusCode.NotFound);
+            act.Should().Throw<NotFoundException>()
+                .WithMessage("Entity \"Sensor`1\" (42) was not found.");
         }
 
         [TestMethod]
@@ -188,9 +178,8 @@ namespace ConditionMonitoringAPI.Tests
             Action act = () => handler.Handle(query, CancToken).Result.Should();
 
             //Assert
-            act.Should().Throw<RestException>()
-                .WithMessage("Could not find a board with an Id of 3")
-                .And.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            act.Should().Throw<BadRequestException>()
+                .WithMessage("Could not find a board with an Id of 3");
         }
 
         public override void Seed(ConditionMonitoringDbContext dbContext)

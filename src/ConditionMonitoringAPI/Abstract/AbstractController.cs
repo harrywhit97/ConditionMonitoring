@@ -53,10 +53,15 @@ namespace ConditionMonitoringAPI.Abstract
             {
                 entity = await Mediator.Send(new GetEntityById<T, TId>(Id));
             }
-            catch (Exception e)
+            catch (NotFoundException e)
             {
                 Logger.LogError(e, "There was an error processing a Get request");
                 return NotFound(e.Message);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError(e, "There was an error processing a Get request");
+                return BadRequest(e.Message);
             }
             return Ok(entity);
         }
@@ -73,13 +78,6 @@ namespace ConditionMonitoringAPI.Abstract
             {
                 var entity = await Mediator.Send(new CreateEntityFromDto<T, TId, TDto>(dto), new CancellationToken());
                 return CreatedAtAction(nameof(Get), new { id = entity.Id }, entity);
-            }
-            catch (RestException e)
-            {
-                Logger.LogError(e, "There was an error processing a Post request");
-                if (e.StatusCode == HttpStatusCode.NotFound)
-                    return NotFound(e.Message);
-                return BadRequest(e.Message);
             }
             catch (Exception e)
             {
@@ -100,12 +98,10 @@ namespace ConditionMonitoringAPI.Abstract
                 await Mediator.Send(new DeleteEntity<T, TId>(Id), new CancellationToken());
                 return Ok();
             }
-            catch (RestException e)
+            catch (NotFoundException e)
             {
                 Logger.LogError(e, "There was an error processing a Delete request");
-                if (e.StatusCode == HttpStatusCode.NotFound)
-                    return NotFound(e.Message);
-                return BadRequest(e.Message);
+                return NotFound(e.Message);
             }
             catch (Exception e)
             {
@@ -128,14 +124,10 @@ namespace ConditionMonitoringAPI.Abstract
             {
                 return Ok(await Mediator.Send(new UpdateEntityFromDto<T, TId, TDto>(Id, update), new CancellationToken()));
             }
-            catch(RestException e)
+            catch(NotFoundException e)
             {
                 Logger.LogError(e, "There was an error processing a Put request");
-
-                if (e.StatusCode == HttpStatusCode.NotFound)
-                    return NotFound(e.Message);
-
-                return BadRequest(e.Message);
+                return NotFound(e.Message);
             }
             catch (Exception e)
             {

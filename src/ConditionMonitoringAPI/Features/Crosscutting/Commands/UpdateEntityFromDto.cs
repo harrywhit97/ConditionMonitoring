@@ -46,7 +46,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
             try
             {
                 var e = await Context.Set<T>().FindAsync(request.Id)
-                   ?? throw new NotFoundException(nameof(T), request.Id);
+                   ?? throw new NotFoundException(typeof(T).Name, request.Id);
 
                 Context.Entry(e).State = EntityState.Detached;
 

@@ -49,10 +49,8 @@ namespace ConditionMonitoringAPI.Tests
             Action act = () => handler.Handle(query, CancToken).Result.Should();
 
             //Assert
-            act.Should().Throw<RestException>()
-                .WithMessage("Could not find a Board with an Id of 0")
-                .And
-                .StatusCode.Should().Be(HttpStatusCode.NotFound);
+            act.Should().Throw<NotFoundException>()
+                .WithMessage("Entity \"Board\" (0) was not found.");
         }
 
         [TestMethod]
@@ -97,10 +95,8 @@ namespace ConditionMonitoringAPI.Tests
             Action act = () => handler.Handle(query, CancToken).Result.Should();
 
             //Assert
-            act.Should().Throw<RestException>()
-                .WithMessage("Exception of type 'FluentValidation.ValidationException' was thrown.")
-                .And
-                .StatusCode.Should().Be(HttpStatusCode.BadRequest);
+            act.Should().Throw<BadRequestException>()
+                .WithMessage("Exception of type 'FluentValidation.ValidationException' was thrown.");
         }
 
         [TestMethod]
@@ -137,8 +133,7 @@ namespace ConditionMonitoringAPI.Tests
             Action act = () => handler.Handle(query, CancToken).Result.Should();
 
             //Assert
-            act.Should().Throw<RestException>().Which
-                .StatusCode.Should().Be(HttpStatusCode.NotFound);
+            act.Should().Throw<NotFoundException>();
         }
 
         [TestMethod]

@@ -32,7 +32,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Queries
         public async Task<T> Handle(GetEntityById<T, TId> request, CancellationToken cancellationToken)
         {
             var result = await Context.Set<T>().FindAsync(request.Id);
-            _ = result ?? throw new NotFoundException(nameof(T), request.Id);
+            _ = result ?? throw new NotFoundException(typeof(T).Name, request.Id);
             return result;
         }
     }

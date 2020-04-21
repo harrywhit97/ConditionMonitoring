@@ -34,7 +34,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
             var entity = await Context.Set<T>().FindAsync(request.Id);
 
             if (entity == null)
-                throw new NotFoundException(nameof(T), request.Id);
+                throw new NotFoundException(typeof(T).Name, request.Id);
 
             Context.Set<T>().Remove(entity);
             Context.SaveChanges();
