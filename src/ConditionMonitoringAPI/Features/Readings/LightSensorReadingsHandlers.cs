@@ -48,7 +48,7 @@ namespace ConditionMonitoringAPI.Features.Readings
         {
             request.Dto.Sensor = Context.Set<Sensor<ISensorReading>>().Find(request.Dto.SensorId);
 
-            _ = request.Dto.Sensor ?? throw new RestException(HttpStatusCode.BadRequest, $"Could not find a sensor with an Id of {request.Dto.SensorId}");
+            _ = request.Dto.Sensor ?? throw new BadRequestException($"Could not find a sensor with an Id of {request.Dto.SensorId}");
 
             return base.Handle(request, cancellationToken);
         }

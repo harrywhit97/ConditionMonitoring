@@ -34,7 +34,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
             var entity = await Context.Set<T>().FindAsync(request.Id);
 
             if (entity == null)
-                throw new RestException(HttpStatusCode.NotFound, $"Could not find a {typeof(T).Name} with an Id of '{request.Id}'");
+                throw new NotFoundException(nameof(T), request.Id);
 
             Context.Set<T>().Remove(entity);
             Context.SaveChanges();

@@ -40,7 +40,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
 
         public async Task<T> Handle(CreateEntityFromDto<T, TId, TDto> request, CancellationToken cancellationToken)
         {
-            var Dto = request.Dto ?? throw new RestException(HttpStatusCode.BadRequest, "Null Dto");
+            var Dto = request.Dto ?? throw new BadRequestException("Null Dto");
             T entity;
             try
             {
@@ -52,7 +52,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
             }
             catch (Exception e)
             {
-                throw new RestException(HttpStatusCode.BadRequest, e.Message);
+                throw new BadRequestException(e.Message);
             }
 
             Context.Set<T>().Add(entity);

@@ -46,7 +46,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
             try
             {
                 var e = await Context.Set<T>().FindAsync(request.Id)
-                   ?? throw new RestException(HttpStatusCode.NotFound, $"Could not find a {typeof(T).Name} with an Id of {request.Id}");
+                   ?? throw new NotFoundException(nameof(T), request.Id);
 
                 Context.Entry(e).State = EntityState.Detached;
 
@@ -62,7 +62,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
             }
             catch (Exception e)
             {
-                throw new RestException(HttpStatusCode.BadRequest, e.Message);
+                throw new BadRequestException(e.Message);
             }
             return entity;
         }

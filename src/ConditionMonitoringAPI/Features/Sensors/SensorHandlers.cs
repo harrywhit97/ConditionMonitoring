@@ -48,7 +48,7 @@ namespace ConditionMonitoringAPI.Features.Sensors
             {
                 request.Dto.Board = Context.Set<Board>().Find(request.Dto.BoardId);
 
-                _ = request.Dto.Board ?? throw new RestException(HttpStatusCode.BadRequest, $"Could not find a board with an Id of {request.Dto.BoardId}");
+                _ = request.Dto.Board ?? throw new BadRequestException($"Could not find a board with an Id of {request.Dto.BoardId}");
 
                 return base.Handle(request, cancellationToken);
             }
