@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Domain.Interfaces
+namespace ConditionMonitoringAPI.Services
 {
     public interface IDateTime
     {

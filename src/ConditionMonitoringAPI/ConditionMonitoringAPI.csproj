@@ -17,8 +17,8 @@
 
   <ItemGroup>
     <Compile Remove="Features\Boards\BoardHandlers.cs" />
-    <Compile Remove="Features\Crosscutting\Commands\DeleteEntityHandler.cs" />
-    <Compile Remove="Features\Crosscutting\Commands\UpdateEntityFromDtoHandler.cs" />
+    <Compile Remove="Features\Common\Commands\DeleteEntityHandler.cs" />
+    <Compile Remove="Features\Common\Commands\UpdateEntityFromDtoHandler.cs" />
     <Compile Remove="Features\Readings\Commands\CreateBatchOfReadings.cs" />
     <Compile Remove="Features\Readings\Controllers\RawSensorReadingController.cs" />
   </ItemGroup>
@@ -30,7 +30,6 @@
     <PackageReference Include="FluentValidation.AspNetCore" Version="9.0.0-preview3" />
     <PackageReference Include="MediatR" Version="8.0.1" />
     <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
-    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.7" />
     <PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="3.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.OData" Version="7.4.0-beta" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0-preview.2.20159.4" />

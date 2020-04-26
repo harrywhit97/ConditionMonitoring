@@ -4,15 +4,15 @@ using System;
 using Domain.Interfaces;
 using System.Threading.Tasks;
 using MediatR;
-using ConditionMonitoringAPI.Features.Crosscutting.Commands;
 using System.Threading;
-using ConditionMonitoringAPI.Features.Crosscutting.Queries;
 using ConditionMonitoringAPI.Exceptions;
 using Microsoft.AspNet.OData;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using ConditionMonitoringAPI.Mapping;
+using ConditionMonitoringAPI.Features.Common.Queries;
+using ConditionMonitoringAPI.Features.Common.Commands;
 
 namespace ConditionMonitoringAPI.Abstract
 {

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
+namespace ConditionMonitoringAPI.Features.Common.Commands
 {
     public abstract class CreateEntityFromRequestHandler<T, TId, TRequest> : IRequestHandler<TRequest, T>
         where T : class, IHasId<TId>

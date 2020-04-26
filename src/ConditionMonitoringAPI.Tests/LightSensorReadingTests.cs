@@ -1,6 +1,6 @@
 using ConditionMonitoringAPI.Exceptions;
-using ConditionMonitoringAPI.Features.Crosscutting.Commands;
-using ConditionMonitoringAPI.Features.Crosscutting.Queries;
+using ConditionMonitoringAPI.Features.Common.Commands;
+using ConditionMonitoringAPI.Features.Common.Queries;
 using ConditionMonitoringAPI.Features.Readings.Commands;
 using ConditionMonitoringAPI.Features.Readings.Dtos;
 using Domain.Interfaces;

@@ -1,4 +1,4 @@
-﻿using ConditionMonitoringAPI.Features.Crosscutting.Queries;
+﻿using ConditionMonitoringAPI.Features.Common.Queries;
 using Domain.Models;
 
 namespace ConditionMonitoringAPI.Features.Boards.Queries

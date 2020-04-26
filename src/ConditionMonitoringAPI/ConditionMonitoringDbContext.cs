@@ -1,4 +1,5 @@
-﻿using Domain.Abstract;
+﻿using ConditionMonitoringAPI.Services;
+using Domain.Abstract;
 using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;

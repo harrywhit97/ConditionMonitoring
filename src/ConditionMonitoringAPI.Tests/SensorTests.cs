@@ -1,6 +1,6 @@
 using ConditionMonitoringAPI.Exceptions;
-using ConditionMonitoringAPI.Features.Crosscutting.Commands;
-using ConditionMonitoringAPI.Features.Crosscutting.Queries;
+using ConditionMonitoringAPI.Features.Common.Commands;
+using ConditionMonitoringAPI.Features.Common.Queries;
 using ConditionMonitoringAPI.Features.Sensors.Commands;
 using ConditionMonitoringAPI.Features.Sensors.Dtos;
 using Domain.Enums;
@@ -23,9 +23,6 @@ namespace ConditionMonitoringAPI.Tests
         public void GetExistingSensorByIdSucceeds()
         {
             //Arrange
-            var logger = new Mock<ILogger<GetSensorByIdHandler>>();
-
-
             var handler = new GetSensorByIdHandler(Context);
             var query = new GetEntityById<Sensor<ISensorReading>, long>(1);
 

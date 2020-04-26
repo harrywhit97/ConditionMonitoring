@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
+namespace ConditionMonitoringAPI.Features.Common.Commands
 {
     public class DeleteEntity<T, TId> : IRequest<bool>
         where T : class, IHasId<TId>

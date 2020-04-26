@@ -1,7 +1,7 @@
 using ConditionMonitoringAPI.Exceptions;
 using ConditionMonitoringAPI.Features.Boards.Commands;
-using ConditionMonitoringAPI.Features.Crosscutting.Commands;
-using ConditionMonitoringAPI.Features.Crosscutting.Queries;
+using ConditionMonitoringAPI.Features.Common.Commands;
+using ConditionMonitoringAPI.Features.Common.Queries;
 using Domain.Models;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

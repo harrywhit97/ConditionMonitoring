@@ -1,4 +1,4 @@
-﻿using ConditionMonitoringAPI.Features.Crosscutting.Commands;
+﻿using ConditionMonitoringAPI.Features.Common.Commands;
 using Domain.Models;
 
 namespace ConditionMonitoringAPI.Features.Boards.Commands

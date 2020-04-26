@@ -4,14 +4,16 @@ using ConditionMonitoringAPI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ConditionMonitoringAPI.Migrations
 {
     [DbContext(typeof(ConditionMonitoringDbContext))]
-    partial class ConditionMonitoringDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200426120059_26-04-20")]
+    partial class _260420
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ConditionMonitoringAPI.Mapping;
-using Domain.Interfaces;
+using ConditionMonitoringAPI.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;

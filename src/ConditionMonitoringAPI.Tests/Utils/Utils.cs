@@ -1,4 +1,4 @@
-﻿using Domain.Interfaces;
+﻿using ConditionMonitoringAPI.Services;
 using Moq;
 using System;
 

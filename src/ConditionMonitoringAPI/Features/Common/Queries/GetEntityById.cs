@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ConditionMonitoringAPI.Features.Crosscutting.Queries
+namespace ConditionMonitoringAPI.Features.Common.Queries
 {
     public class GetEntityById<T, TId> : IRequest<T> 
         where T : class, IHasId<TId>

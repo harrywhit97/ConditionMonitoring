@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ConditionMonitoringAPI.Features.Boards.Dtos;
-using ConditionMonitoringAPI.Features.Crosscutting.Commands;
+using ConditionMonitoringAPI.Features.Common.Commands;
 using ConditionMonitoringAPI.Mapping;
 using Domain.Interfaces;
 using Domain.Models;

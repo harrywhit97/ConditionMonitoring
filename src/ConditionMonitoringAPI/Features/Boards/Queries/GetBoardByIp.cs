@@ -1,13 +1,8 @@
-﻿using AutoMapper;
-using ConditionMonitoringAPI.Abstract;
-using ConditionMonitoringAPI.Exceptions;
+﻿using ConditionMonitoringAPI.Exceptions;
 using Domain.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,7 +19,7 @@ namespace ConditionMonitoringAPI.Features.Boards.Queries
 
         public class GetBoardByIpHandler : IRequestHandler<GetBoardByIp, Board>
         {
-            ConditionMonitoringDbContext Context;
+            readonly ConditionMonitoringDbContext Context;
             public GetBoardByIpHandler(ConditionMonitoringDbContext dbContext)
             {
                 Context = dbContext;

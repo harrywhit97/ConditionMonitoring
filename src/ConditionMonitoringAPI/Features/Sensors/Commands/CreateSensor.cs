@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ConditionMonitoringAPI.Features.Crosscutting.Commands;
+using ConditionMonitoringAPI.Features.Common.Commands;
 using ConditionMonitoringAPI.Features.Sensors.Dtos;
 using ConditionMonitoringAPI.Mapping;
 using Domain.Interfaces;

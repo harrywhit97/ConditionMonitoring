@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ConditionMonitoringAPI.Features.Crosscutting.Queries
+namespace ConditionMonitoringAPI.Features.Common.Queries
 {
     public class GetEntiities<T, TId> : IRequest<IQueryable<T>> 
         where T : class, IHasId<TId>

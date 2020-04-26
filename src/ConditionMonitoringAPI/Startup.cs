@@ -2,7 +2,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using AutoMapper;
-using ConditionMonitoringAPI.Features.Crosscutting.Behaviours;
+using ConditionMonitoringAPI.Features.Common.Behaviours;
 using ConditionMonitoringAPI.Services;
 using Domain.Interfaces;
 using Domain.Models;
