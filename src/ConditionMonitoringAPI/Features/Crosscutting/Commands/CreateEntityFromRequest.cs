@@ -1,10 +1,8 @@
 ﻿using AutoMapper;
-using ConditionMonitoringAPI.Exceptions;
-using ConditionMonitoringAPI.Interfaces;
+using ConditionMonitoringAPI.Mapping;
 using Domain.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,7 +10,7 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
 {
     public abstract class CreateEntityFromRequestHandler<T, TId, TRequest> : IRequestHandler<TRequest, T>
         where T : class, IHasId<TId>
-        where TRequest : IRequest<T>, IMapToo<T>
+        where TRequest : IRequest<T>, IMapFrom<T>
     {
         readonly protected DbContext Context;
         readonly protected IMapper Mapper;

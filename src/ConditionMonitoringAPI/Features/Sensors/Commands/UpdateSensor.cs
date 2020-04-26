@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using ConditionMonitoringAPI.Features.Crosscutting.Commands;
 using ConditionMonitoringAPI.Features.Sensors.Dtos;
+using ConditionMonitoringAPI.Mapping;
 using Domain.Interfaces;
 using Domain.Models;
+using MediatR;
 
 namespace ConditionMonitoringAPI.Features.Sensors.Commands
 {
-    public class UpdateSensor : SensorDto, IUpdateEntityFromRequest<Sensor<ISensorReading>, long>
+    public class UpdateSensor : SensorDto, IRequest<Sensor<ISensorReading>>, IHasId<long>, IMapFrom<Sensor<ISensorReading>>
     {
         public long Id { get; set; }
     }

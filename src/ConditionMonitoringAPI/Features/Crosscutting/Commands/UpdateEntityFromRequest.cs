@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using ConditionMonitoringAPI.Exceptions;
-using ConditionMonitoringAPI.Interfaces;
+using ConditionMonitoringAPI.Mapping;
 using Domain.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -9,14 +9,9 @@ using System.Threading.Tasks;
 
 namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
 {
-    public interface IUpdateEntityFromRequest<T, TId> : IRequest<T>, IHasId<TId>, IMapToo<T>
-        where T : class, IHasId<TId>
-    {
-    }
-
     public abstract class UpdateEntityFromRequestHandler<T, TId, TRequest> : IRequestHandler<TRequest, T>
         where T : class, IHasId<TId>
-        where TRequest : IRequest<T>, IMapToo<T>, IHasId<TId>
+        where TRequest : IRequest<T>, IMapFrom<T>, IHasId<TId>
     {
         readonly protected DbContext _context;
         readonly protected IMapper _mapper;

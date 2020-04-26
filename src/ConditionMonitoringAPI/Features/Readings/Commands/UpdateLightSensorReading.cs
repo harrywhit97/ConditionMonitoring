@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
 using ConditionMonitoringAPI.Features.Crosscutting.Commands;
 using ConditionMonitoringAPI.Features.Readings.Dtos;
+using ConditionMonitoringAPI.Mapping;
+using Domain.Interfaces;
 using Domain.Models;
+using MediatR;
 
 namespace ConditionMonitoringAPI.Features.Readings.Commands
 {
-    public class UpdateLightSensorReading : LightSensorReadingDto, IUpdateEntityFromRequest<LightSensorReading, long>
+    public class UpdateLightSensorReading : LightSensorReadingDto, IRequest<LightSensorReading>, IHasId<long>, IMapFrom<LightSensorReading>
     {
         public long Id { get; set; }
     }
