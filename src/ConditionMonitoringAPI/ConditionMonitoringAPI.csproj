@@ -16,8 +16,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Features\Boards\BoardHandlers.cs" />
     <Compile Remove="Features\Crosscutting\Commands\DeleteEntityHandler.cs" />
     <Compile Remove="Features\Crosscutting\Commands\UpdateEntityFromDtoHandler.cs" />
+    <Compile Remove="Features\Readings\Commands\CreateBatchOfReadings.cs" />
+    <Compile Remove="Features\Readings\Controllers\RawSensorReadingController.cs" />
   </ItemGroup>
 
   <ItemGroup>

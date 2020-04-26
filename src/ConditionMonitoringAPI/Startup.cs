@@ -2,14 +2,11 @@ using System.Linq;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using AutoMapper;
-using ConditionMonitoringAPI.Features.Boards.Validators;
-using ConditionMonitoringAPI.Features.Crosscutting.PipelineBehaviors;
-using ConditionMonitoringAPI.Features.Readings;
-using ConditionMonitoringAPI.Features.Sensors;
-using ConditionMonitoringAPI.Features.SensorsReadings.Validators;
+using ConditionMonitoringAPI.Features.Crosscutting.Behaviours;
 using ConditionMonitoringAPI.Services;
 using Domain.Interfaces;
 using Domain.Models;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
@@ -72,14 +69,15 @@ namespace ConditionMonitoringAPI
 
             services.AddLogging();
 
-            services.AddScoped<LightSensorReadingValidator>();
-            services.AddScoped<BoardValidator>();
-            services.AddScoped<SensorValidator>();
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddMediatR(Assembly.GetExecutingAssembly());
 
             services.AddTransient<IDateTime, DateTimeService>();
-            services.AddAutoMapper(typeof(MappingProfile));
-            services.AddMediatR(Assembly.GetExecutingAssembly());
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingPipelineBehavior<,>));
+
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
