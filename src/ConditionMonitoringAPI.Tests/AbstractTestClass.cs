@@ -1,5 +1,10 @@
 ﻿using AutoMapper;
+using ConditionMonitoringAPI.Abstract;
+using ConditionMonitoringAPI.Features.Crosscutting;
+using ConditionMonitoringAPI.Features.Readings;
+using ConditionMonitoringAPI.Mapping;
 using Domain.Interfaces;
+using FluentValidation.Results;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -14,6 +19,7 @@ namespace ConditionMonitoringAPI.Tests
         public ConditionMonitoringDbContext Context;
         public CancellationToken CancToken => new CancellationToken();
         public IMapper Mapper;
+        IConfigurationProvider _configuration;
 
         [TestInitialize]
         public virtual void Initialize()
@@ -21,6 +27,16 @@ namespace ConditionMonitoringAPI.Tests
             DateTimeDefualt = new DateTimeOffset(2020, 04, 04, 13, 12, 11, TimeSpan.Zero);
             DateTime = Utils.Utils.GetMockDateTime(DateTimeDefualt);
             Context = DbContextMocker.GetConditionMonitoringDbContext(DateTime.Object);
+
+            _configuration = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<MappingProfile>();
+            });
+
+            Mapper = _configuration.CreateMapper();
+            var myProfile = new MappingProfile();
+            var configuration = new MapperConfiguration(cfg => cfg.AddProfile(myProfile));
+            Mapper = new Mapper(configuration);
         }
 
 

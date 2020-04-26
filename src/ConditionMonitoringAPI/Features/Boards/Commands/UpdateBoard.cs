@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
 using ConditionMonitoringAPI.Features.Boards.Dtos;
 using ConditionMonitoringAPI.Features.Crosscutting.Commands;
+using ConditionMonitoringAPI.Mapping;
+using Domain.Interfaces;
 using Domain.Models;
+using MediatR;
 
 namespace ConditionMonitoringAPI.Features.Boards.Commands
 {
-    public class UpdateBoard : BoardDto, IUpdateEntityFromRequest<Board, long>
+    public class UpdateBoard : BoardDto, IRequest<Board>, IHasId<long>, IMapFrom<Board>
     {
         public long Id { get; set; }
     }

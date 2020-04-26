@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 
-namespace ConditionMonitoringAPI.Interfaces
+namespace ConditionMonitoringAPI.Mapping
 {
-    public interface IMapToo<T>
+    public interface IMapFrom<T>
     {
         void Mapping(Profile profile) => profile.CreateMap(GetType(), typeof(T));
     }

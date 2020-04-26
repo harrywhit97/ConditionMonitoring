@@ -1,14 +1,14 @@
 ﻿using AutoMapper;
 using ConditionMonitoringAPI.Features.Crosscutting.Commands;
 using ConditionMonitoringAPI.Features.Sensors.Dtos;
-using ConditionMonitoringAPI.Interfaces;
+using ConditionMonitoringAPI.Mapping;
 using Domain.Interfaces;
 using Domain.Models;
 using MediatR;
 
 namespace ConditionMonitoringAPI.Features.Sensors.Commands
 {
-    public class CreateSensor : SensorDto, IRequest<Sensor<ISensorReading>>, IMapToo<Sensor<ISensorReading>>
+    public class CreateSensor : SensorDto, IRequest<Sensor<ISensorReading>>, IMapFrom<Sensor<ISensorReading>>
     {
     }
 

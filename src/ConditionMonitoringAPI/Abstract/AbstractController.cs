@@ -12,14 +12,14 @@ using Microsoft.AspNet.OData;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using ConditionMonitoringAPI.Interfaces;
+using ConditionMonitoringAPI.Mapping;
 
 namespace ConditionMonitoringAPI.Abstract
 {
     public abstract class AbstractController<T, TId, TCreateEnityRequest, TUpdateEntityRequest> : ApiController
         where T : class, IHasId<TId>
-        where TCreateEnityRequest : class, IRequest<T>, IMapToo<T>
-        where TUpdateEntityRequest : class, IRequest<T>, IMapToo<T>
+        where TCreateEnityRequest : class, IRequest<T>, IMapFrom<T>
+        where TUpdateEntityRequest : class, IRequest<T>, IMapFrom<T>
     {
         readonly ILogger Logger;
 
