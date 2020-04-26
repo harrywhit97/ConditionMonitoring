@@ -39,7 +39,7 @@ namespace ConditionMonitoringAPI.Features.Boards.Queries
                     .Where(x => x.IpAddress == ip)
                     .FirstOrDefaultAsync();
 
-                return board ?? throw new RestException(HttpStatusCode.NotFound, ($"A board that has an Ip address of {ip} was not found."));
+                return board ?? throw new NotFoundException($"Could not find a Board with an IP of {request.Ip}");
             }
         }
     }

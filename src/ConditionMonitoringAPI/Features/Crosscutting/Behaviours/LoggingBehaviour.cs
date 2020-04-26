@@ -3,14 +3,14 @@ using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ConditionMonitoringAPI.Features.Crosscutting.PipelineBehaviors
+namespace ConditionMonitoringAPI.Features.Crosscutting.Behaviours
 {
-    public class LoggingPipelineBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    public class LoggingBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : IRequest<TResponse>
     {
         readonly ILogger Logger;
 
-        public LoggingPipelineBehavior(ILogger<LoggingPipelineBehavior<TRequest, TResponse>> logger)
+        public LoggingBehaviour(ILogger<LoggingBehaviour<TRequest, TResponse>> logger)
         {
             Logger = logger;
         }

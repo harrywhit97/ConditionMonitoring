@@ -10,10 +10,12 @@ namespace Domain.Models
         public long Id { get; set; }
         public string Name { get; set; }
         public long Address { get; set; }
-        public virtual Board Board { get; set; }
+        public long BoardId { get; set; }
         public long Pin { get; set; }
         public SensorType SensorType { get; set; }
+
         public virtual ICollection<TReading> Readings { get; }
+        public virtual Board Board { get; set; }
 
         public Sensor()
         {

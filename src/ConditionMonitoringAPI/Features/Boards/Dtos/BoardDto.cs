@@ -1,4 +1,4 @@
-﻿namespace ConditionMonitoringAPI.Features.Boards
+﻿namespace ConditionMonitoringAPI.Features.Boards.Dtos
 {
     public class BoardDto
     {

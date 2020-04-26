@@ -1,17 +1,15 @@
 ﻿using ConditionMonitoringAPI.Abstract;
-using ConditionMonitoringAPI.Features.Readings.Dtos;
+using ConditionMonitoringAPI.Features.Readings.Commands;
 using Domain.Models;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace ConditionMonitoringAPI.Features.Readings.Controllers
 {
-    public class LightSensorReadingController : AbstractController<LightSensorReading, long, LightSensorReadingDto>
+    public class LightSensorReadingController : AbstractController<LightSensorReading, long, CreateLightSensorReading, UpdateLightSensorReading>
     {
         public LightSensorReadingController(ConditionMonitoringDbContext context, 
-            IMediator mediator,
             ILogger<LightSensorReadingController> logger)
-            :base(context, mediator, logger)
+            :base(context, logger)
         {
         }
     }

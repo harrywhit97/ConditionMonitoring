@@ -31,22 +31,6 @@ namespace ConditionMonitoringAPI.Features.Boards
             }
         }
 
-        public class CreateBoardHandler : CreateEntityFromDtoHandler<Board, long, BoardValidator, BoardDto>
-        {
-            public CreateBoardHandler(ConditionMonitoringDbContext context, BoardValidator validator, IMapper mapper)
-                : base(context, validator, mapper)
-            {
-            }
-        }
-
-        public class UpdateBoardHandler : UpdateEntityFromDtoHandler<Board, long, BoardValidator, BoardDto>
-        {
-            public UpdateBoardHandler(ConditionMonitoringDbContext context, BoardValidator validator, IMapper mapper)
-                : base(context, validator, mapper)
-            {
-            }
-        }
-
         public class DeleteBoardByIdHandler : DeleteEntityHandler<Board, long>
         {
             public DeleteBoardByIdHandler(ConditionMonitoringDbContext context)

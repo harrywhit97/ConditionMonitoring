@@ -2,7 +2,6 @@
 using Domain.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,10 +30,8 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Commands
 
         public async Task<bool> Handle(DeleteEntity<T, TId> request, CancellationToken cancellationToken)
         {
-            var entity = await Context.Set<T>().FindAsync(request.Id);
-
-            if (entity == null)
-                throw new RestException(HttpStatusCode.NotFound, $"Could not find a {typeof(T).Name} with an Id of '{request.Id}'");
+            var entity = await Context.Set<T>().FindAsync(request.Id)
+                ?? throw new NotFoundException(typeof(T).Name, request.Id);
 
             Context.Set<T>().Remove(entity);
             Context.SaveChanges();

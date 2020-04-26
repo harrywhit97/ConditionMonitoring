@@ -1,18 +1,16 @@
 ﻿using ConditionMonitoringAPI.Abstract;
-using ConditionMonitoringAPI.Features.Sensors.Dtos;
+using ConditionMonitoringAPI.Features.Sensors.Commands;
 using Domain.Interfaces;
 using Domain.Models;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace ConditionMonitoringAPI.Features.Sensors.Controllers
 {
-    public class SensorController : AbstractController<Sensor<ISensorReading>, long, SensorDto >
+    public class SensorController : AbstractController<Sensor<ISensorReading>, long, CreateSensor, UpdateSensor>
     {
-        public SensorController(ConditionMonitoringDbContext context, 
-            IMediator mediator, 
+        public SensorController(ConditionMonitoringDbContext context,
             ILogger<SensorController> logger)
-            :base(context, mediator, logger)
+            :base(context, logger)
         {
         }
     }
