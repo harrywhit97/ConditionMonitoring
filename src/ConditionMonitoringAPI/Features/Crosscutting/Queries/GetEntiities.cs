@@ -22,9 +22,9 @@ namespace ConditionMonitoringAPI.Features.Crosscutting.Queries
             Context = dbContext;
         }
 
-        public async Task<IQueryable<T>> Handle(GetEntiities<T, TId> request, CancellationToken cancellationToken)
+        public Task<IQueryable<T>> Handle(GetEntiities<T, TId> request, CancellationToken cancellationToken)
         {
-            return Context.Set<T>().AsQueryable();
+            return (Task<IQueryable<T>>)Context.Set<T>().AsQueryable();
         }
     }
 }

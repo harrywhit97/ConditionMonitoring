@@ -6,7 +6,7 @@ namespace ConditionMonitoringAPI.Features.Readings.Dtos
     {
         public DateTimeOffset? ReadingTime { get; set; }
         public decimal? ReadingRawReading { get; set; }
-        public string? IpAddress { get; set; }
+        public string IpAddress { get; set; }
         public long? Pin { get; set; }
     }
 }

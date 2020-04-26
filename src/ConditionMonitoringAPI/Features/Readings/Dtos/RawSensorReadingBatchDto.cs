@@ -6,7 +6,7 @@ namespace ConditionMonitoringAPI.Features.Readings.Dtos
 {
     public class RawSensorReadingBatchDto
     {
-        public string? IpAddress { get; set; }
+        public string IpAddress { get; set; }
         public long? Pin { get; set; }
         public IList<RawSensorReadingDto> Readings { get; set; }
         [JsonIgnore]

@@ -1,10 +1,6 @@
 ﻿using AutoMapper;
-using ConditionMonitoringAPI.Abstract;
-using ConditionMonitoringAPI.Features.Crosscutting;
-using ConditionMonitoringAPI.Features.Readings;
 using ConditionMonitoringAPI.Mapping;
 using Domain.Interfaces;
-using FluentValidation.Results;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
