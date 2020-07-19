@@ -1,5 +1,6 @@
 ﻿using Domain.Models;
 using System;
+using WebApiUtilities.Interfaces;
 
 namespace Domain.Interfaces
 {

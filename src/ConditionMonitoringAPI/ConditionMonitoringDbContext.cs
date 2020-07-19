@@ -1,25 +1,21 @@
-﻿using ConditionMonitoringAPI.Services;
-using Domain.Abstract;
-using Domain.Interfaces;
+﻿using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
+using WebApiUtilities.Abstract;
+using WebApiUtilities.Interfaces;
 
 namespace ConditionMonitoringAPI
 {
-    public class ConditionMonitoringDbContext : DbContext
+    public class ConditionMonitoringDbContext : AuditingDbContext
     {        
         public DbSet<LightSensorReading> LightSensorReadings { get; set; }
         public DbSet<Sensor<ISensorReading>> Sensors { get; set; }
         public DbSet<Board> Boards { get; set; }
-        readonly IDateTime DateTime;
 
-        public ConditionMonitoringDbContext(DbContextOptions<ConditionMonitoringDbContext> options, IDateTime dateTime)
-            : base(options)
+        public ConditionMonitoringDbContext(DbContextOptions<ConditionMonitoringDbContext> options, IClock clock)
+            : base(options, clock)
         {
-            DateTime = dateTime;
         }
 
         protected override void OnModelCreating(ModelBuilder modelbuilder)
@@ -46,25 +42,6 @@ namespace ConditionMonitoringAPI
                 .OnDelete(DeleteBehavior.Cascade);
 
             base.OnModelCreating(modelbuilder);
-        }
-
-        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default)
-        {
-            foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
-            {
-                switch (entry.State)
-                {
-                    case EntityState.Added:
-                        entry.Entity.CreatedAt = DateTime.Now;
-                        entry.Entity.UpdatedAt = DateTime.Now;
-                        break;
-                    case EntityState.Modified:
-                        entry.Entity.UpdatedAt = DateTime.Now;
-                        break;
-                }
-            }
-
-            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
-        }
+        }        
     }
 }

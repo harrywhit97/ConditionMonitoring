@@ -1,13 +1,13 @@
 ﻿using Domain.Enums;
 using Domain.Interfaces;
 using System.Collections.Generic;
+using WebApiUtilities.Abstract;
 
 namespace Domain.Models
 {
-    public class Sensor<TReading> : IHasId<long>
+    public class Sensor<TReading> : Entity<long>
         where TReading : ISensorReading
     {
-        public long Id { get; set; }
         public string Name { get; set; }
         public long Address { get; set; }
         public long BoardId { get; set; }

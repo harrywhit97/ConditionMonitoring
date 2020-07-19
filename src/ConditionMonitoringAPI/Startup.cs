@@ -1,30 +1,23 @@
 using System.Linq;
-using System.Reflection;
-using System.Text.Json.Serialization;
-using AutoMapper;
-using ConditionMonitoringAPI.Features.Common.Behaviours;
-using ConditionMonitoringAPI.Services;
 using Domain.Interfaces;
 using Domain.Models;
-using FluentValidation;
-using MediatR;
 using Microsoft.AspNet.OData.Builder;
 using Microsoft.AspNet.OData.Extensions;
-using Microsoft.AspNet.OData.Formatter;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Net.Http.Headers;
 using Microsoft.OData.Edm;
-using Microsoft.OpenApi.Models;
+using WebApiUtilities.Extenstions;
 
 namespace ConditionMonitoringAPI
 {
     public class Startup
     {
+        const int apiVersion = 1;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -38,46 +31,9 @@ namespace ConditionMonitoringAPI
             var connectionString = Configuration.GetConnectionString("Database");
 
             services.AddDbContext<ConditionMonitoringDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseInMemoryDatabase(""));
 
-            services.AddOData();
-
-            services.AddMvc()
-                .AddControllersAsServices()
-                .AddJsonOptions(options => {
-                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                    options.JsonSerializerOptions.IgnoreNullValues = true;
-                }); ;
-
-            //Work around to enable swagger with Odata
-            services.AddMvcCore(options =>
-            {
-                foreach (var outputFormatter in options.OutputFormatters.OfType<ODataOutputFormatter>().Where(_ => _.SupportedMediaTypes.Count == 0))
-                {
-                    outputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/prs.odatatestxx-odata"));
-                }
-                foreach (var inputFormatter in options.InputFormatters.OfType<ODataInputFormatter>().Where(_ => _.SupportedMediaTypes.Count == 0))
-                {
-                    inputFormatter.SupportedMediaTypes.Add(new MediaTypeHeaderValue("application/prs.odatatestxx-odata"));
-                }
-            });
-            
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
-            });
-
-            services.AddLogging();
-
-            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            services.AddMediatR(Assembly.GetExecutingAssembly());
-
-            services.AddTransient<IDateTime, DateTimeService>();
-
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
+            services.AddWebApiServices(apiVersion);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -93,7 +49,9 @@ namespace ConditionMonitoringAPI
 
             app.UseRouting();
 
-            app.UseAuthorization();            
+            app.UseAuthorization();
+
+            app.AddSwagger(apiVersion);
 
             app.UseSwaggerUI(c =>
             {
@@ -104,8 +62,7 @@ namespace ConditionMonitoringAPI
             {
                 endpoints.EnableDependencyInjection();
                 endpoints.MapControllers();
-                endpoints.Select().Filter().OrderBy().Count().MaxTop(10).Expand();
-                endpoints.MapODataRoute("api", "api", GetEdmModel());
+                endpoints.AddOdata("query", GetEdmModel(), 10);
             });
         }
 

@@ -1,8 +1,3 @@
-using ConditionMonitoringAPI.Exceptions;
-using ConditionMonitoringAPI.Features.Common.Commands;
-using ConditionMonitoringAPI.Features.Common.Queries;
-using ConditionMonitoringAPI.Features.Readings.Commands;
-using ConditionMonitoringAPI.Features.Readings.Dtos;
 using Domain.Interfaces;
 using Domain.Models;
 using FluentAssertions;
@@ -10,8 +5,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
-using static ConditionMonitoringAPI.Features.Readings.Commands.DeleteLightSensorReading;
-using static ConditionMonitoringAPI.Features.Readings.Queries.GetLightSensorReadingQueries;
 
 namespace ConditionMonitoringAPI.Tests
 {
