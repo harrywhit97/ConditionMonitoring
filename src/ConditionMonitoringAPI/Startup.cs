@@ -33,7 +33,7 @@ namespace ConditionMonitoringAPI
             services.AddDbContext<ConditionMonitoringDbContext>(options =>
                 options.UseInMemoryDatabase(""));
 
-            services.AddWebApiServices(apiVersion);
+            services.AddWebApiServices("Condition Monitoring API", apiVersion);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -51,19 +51,7 @@ namespace ConditionMonitoringAPI
 
             app.UseAuthorization();
 
-            app.AddSwagger(apiVersion);
-
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            });
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.EnableDependencyInjection();
-                endpoints.MapControllers();
-                endpoints.AddOdata("query", GetEdmModel(), 10);
-            });
+            app.AddWebApiUtilities(GetEdmModel(), 10, apiVersion);
         }
 
         IEdmModel GetEdmModel()
